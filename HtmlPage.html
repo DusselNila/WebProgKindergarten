@@ -2,92 +2,108 @@
 <html>
 <head>
     <title></title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="StyleSheet.css">
 </head>
 <body id="body">
-   
-    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)">
-    </section>
 
-    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)"></section>
+    <button id="crbutton" type="button" onclick="createTable()">create new table</button>
 
-    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)"></section>
+    <section id="section1" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle1" oncontextmenu="edit('tabletitle1')">Idee</h1><button type="button" onclick="deleteTable('section1')">delete Table</button></section>
+
+    <section id="section2" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle2" oncontextmenu="edit('tabletitle2')">Umsetzung</h1><button type="button" onclick="deleteTable('section2')">delete Table</button></section>
+
+    <section id="section3" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle3" oncontextmenu="edit('tabletitle3')">Fertig</h1><button type="button" onclick="deleteTable('section3')">delete Table</button></section>
+
 
     <script>
+        var section = [];
 
-        function allowDrop(event) {
-    event.preventDefault();
-}
+        function createTable()
+        {
+            var entered = false;
+            while (!entered)
+            {
+                var _content = prompt("Title:", "New Table");
+                if (_content === "") {
 
-        function updatefunc(e) {
-
-            var sections = document.getElementsByTagName("SECTION");
-
-            var saveTickets = [];
-            var counter = 0;
-            for (var i = 0; i < sections.length; i++) {
-                var sectTickets = sections[i].children;
-                for (var cn = 0; cn < sectTickets.length; cn++) {
-
-                    saveTickets[counter] = Object.create(ticket);
-
-                   
-                    var children = sectTickets[cn].getElementsByTagName("div");
-
-                    
-
-                    for (var j = 0; j < children.length; j++) {
-                        if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
-                        {
-
-                            saveTickets[counter].Title = children[j].innerHTML;
-                        }else
-
-                            if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
-                        {
-
-                            saveTickets[counter].Body = children[j].innerHTML;
-                        }else
-
-                                if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
-                        {
-
-                            saveTickets[counter].Author = children[j].innerHTML;
-                        }
-                    }
-                    saveTickets[counter].SectionID = i;
-                    counter++;
+                    alert ("Please enter Title!");
                 }
+                else if(_content!=null)
+                {
+                    entered = true;
+
+                    section[i] = document.createElement("section");
+                    section[i].ondrop = function () { drop(event) };
+                    section[i].ondragover = function () { allowDrop(event) };
+                    section[i].id = "section" + (i+4);
+
+                    var tttxt = document.createTextNode(_content);
+                    var title = document.createElement("h1");
+                    title.id = "tabletitle" + (i+4);
+                    title.oncontextmenu = function () { edit("tabletitle" + (i+4)) };
+                    title.appendChild(tttxt);
+
+                    var delbutton = document.createElement("button");
+                    delbutton.onclick = function () { deleteTable("section" + (i+4)) };
+                    delbutton.type = "button";
+                    var butxt = document.createTextNode("delete Table");
+                    delbutton.appendChild(butxt);
+
+                    section[i].appendChild(title);
+                    section[i].appendChild(delbutton);
+
+                    var element = document.getElementById("body")
+                    element.appendChild(section[i]);
+
+                }
+                else {
+                    entered = true;
+                }
+            
             }
-
-
-            localStorage.setItem("TicketData", JSON.stringify(saveTickets));
-
-            
-            var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
-            
-
-
-
 
         }
 
+        function deleteTable(id)
+        {
+            var element = document.getElementById(id);
+            element.parentNode.removeChild(element);
+        }
+
+
+        function edit(id) {
+
+            var _content = prompt("Title:", document.getElementById(id).innerHTML);
+            if (_content != null && _content != "") {
+                document.getElementById(id).innerHTML = _content;
+            }
+            else {
+                
+                document.getElementById(id).innerHTML = document.getElementById(id).innerHTML;
+            }
+        }
+
+       function allowDrop(event) {
+
+           event.preventDefault();
+}
+
     function drop(event) {
         event.preventDefault();
-        
+
         var data = event.dataTransfer.getData("Node");
-        
+
         //event.target.appendChild(event.dataTransfer.getData(data));
-       
+
            //drop in anderes Ticket verbieten
             var sectEle = event.target;
             while (sectEle.tagName != "SECTION") {
                 sectEle = sectEle.parentElement;
             }
             sectEle.appendChild(draggedEle);
-        
-            updatefunc(event);
+
+
     }
     var draggedEle;
     function dragStart(event) {
@@ -95,67 +111,51 @@
         event.dataTransfer.setData("Node", event.target.dataset.value);
     }
 
-    var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
+        var tickets = [];
+        for (var i = 0; i < 70; i++) {
 
-    var tickets = [];
-   var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
-        for (var i = 0; i < (saveTickets==null?10:saveTickets.length); i++) {
-
-           
-            var currentTicket;
-            if (saveTickets == null) {
-
-                currentTicket = new Object(ticket);
-            } else {
-                currentTicket = saveTickets[i];
-            }
-
-            currentTicket.ID = i;
 
 
             tickets[i] = document.createElement("div");
             tickets[i].ondragstart = function () { dragStart(event); };
             tickets[i].id = "ticket";
-           
-            var ticketHead = document.createElement("div");
-            
-            ticketHead.id = "ticketHead";
-            var HdrTxt = document.createElement("div");
-            HdrTxt.id = "HdrTxt";
-            HdrTxt.innerHTML = currentTicket.Title;
-            ticketHead.appendChild(HdrTxt);
-            var ticketDel = document.createElement("div");
-            ticketDel.innerHTML = "X";
-            ticketDel.id = "ticketDel";
 
-            ticketDel.onclick = function (e) {
-                e.srcElement.parentElement.parentElement.parentElement.removeChild(e.srcElement.parentElement.parentElement);
-            };
-            ticketHead.appendChild(ticketDel);
-            var BodyTxt = document.createTextNode(currentTicket.Body);
-           
+            var ticketHead = document.createElement("div");
+
+            ticketHead.id = "ticketHead";
+            var HdrTxt = document.createTextNode("This is Ticket-Title: " + i);
+            ticketHead.appendChild(HdrTxt);
+            var BodyTxt;
+            if (i === 30) {
+               BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
+
+            } else {
+                BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
+            }
             var ticketBody = document.createElement("div");
             ticketBody.appendChild(BodyTxt);
             ticketBody.id = "ticketBody";
 
             var ticketFooter = document.createElement("div");
             ticketFooter.id = "ticketFooter";
-            var FtrTxt = document.createTextNode(currentTicket.Author);
+            var FtrTxt = document.createTextNode("Author:..");
             ticketFooter.appendChild(FtrTxt);
 
 
             tickets[i].appendChild(ticketHead);
             tickets[i].appendChild(ticketBody);
             tickets[i].appendChild(ticketFooter);
-            //var element = document.getElementById("body")
-            //element.appendChild(tickets[i]);
+            var element = document.getElementById("body")
+            element.appendChild(tickets[i]);
+
+            var hover =  false;
+            tickets[i].onmousedown = function () {
+                //tickets.forEach((a) => { a.style.position = "fixed";});
+                hover = true;
+
+            }
 
 
-            var sections = document.getElementsByTagName("SECTION");
-            sections[currentTicket.SectionID].appendChild(tickets[i]);
-            
-
-           
             //tickets[i].onmouseup = function (e) {
             //    hover = false;
             //    var numb1 = e.srcElement.style.top.match(/\d/g);
@@ -175,39 +175,38 @@
             tickets[i].draggable = true;
             tickets[i].ondrag = function () { moveFunc(event); };
             tickets[i].oncontextmenu = function (e) {
-                if (e.srcElement.id === "ticketBody" || e.srcElement.id === "ticketFooter" || e.srcElement.id === "HdrTxt") {
+                if (e.srcElement.id === "ticketBody") {
                     var promptCmd = prompt("Content:", e.srcElement.innerHTML);
                     if (promptCmd == null) {
                         e.srcElement.innerHTML = e.srcElement.innerHTML;
-                       
+
                     } else {
                         e.srcElement.innerHTML = promptCmd;
                     }
 
-                    
-                   
+
+                    return false;
                 }
-                return false;//disable default menu
                 //BodyTxt = prompt("Content:", "...");
             };
-            
+
             //var person = prompt("Please enter your name", "Harry Potter");
             //if (person != null) {
             //    document.getElementById("demo").innerHTML =
             //    "Hello " + person + "! How are you today?";
             //}
-         
+
 
         }
 
         function moveFunc(e) {
             //if ( e.srcElement.id === "ticket") {
-                
+
             //    e.srcElement.style.position = "absolute";
             //    e.srcElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
             //    e.srcElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
             //} else {
-                
+
             //    e.srcElement.parentElement.position = "absolute";
             //    e.srcElement.parentElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
             //    e.srcElement.parentElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
@@ -237,11 +236,11 @@
         s
     </div>-->
     <!--<script type="text/javascript">
-			var div = document.getElementById('move');
-			document.addEventListener('mousemove',function(e) {
-				div.style.left = e.pageX+"px";
-				div.style.top = e.pageY+"px";
-			});
+            var div = document.getElementById('move');
+            document.addEventListener('mousemove',function(e) {
+                div.style.left = e.pageX+"px";
+                div.style.top = e.pageY+"px";
+            });
     </script>-->
 </body>
 </html>
