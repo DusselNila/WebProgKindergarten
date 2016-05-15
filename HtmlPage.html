@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link rel="stylesheet" href="StyleSheet.css">
+</head>
+<body id="body">
+   
+    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)">
+    </section>
+
+    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)"></section>
+
+    <section id="section" ondrop="drop(event)" ondragover="allowDrop(event)"></section>
+
+    <script>
+
+        function allowDrop(event) {
+    event.preventDefault();
+}
+
+    function drop(event) {
+        event.preventDefault();
+        
+        var data = event.dataTransfer.getData("Node");
+        
+        //event.target.appendChild(event.dataTransfer.getData(data));
+       
+           //drop in anderes Ticket verbieten
+            var sectEle = event.target;
+            while (sectEle.tagName != "SECTION") {
+                sectEle = sectEle.parentElement;
+            }
+            sectEle.appendChild(draggedEle);
+        
+    
+    }
+    var draggedEle;
+    function dragStart(event) {
+        draggedEle = event.srcElement;
+        event.dataTransfer.setData("Node", event.target.dataset.value);
+    }
+
+        var tickets = [];
+        for (var i = 0; i < 70; i++) {
+
+          
+
+            tickets[i] = document.createElement("div");
+            tickets[i].ondragstart = function () { dragStart(event); };
+            tickets[i].id = "ticket";
+           
+            var ticketHead = document.createElement("div");
+            
+            ticketHead.id = "ticketHead";
+            var HdrTxt = document.createTextNode("This is Ticket-Title: " + i);
+            ticketHead.appendChild(HdrTxt);
+            var BodyTxt;
+            if (i === 30) {
+               BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
+           
+            } else {
+                BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
+            }
+            var ticketBody = document.createElement("div");
+            ticketBody.appendChild(BodyTxt);
+            ticketBody.id = "ticketBody";
+
+            var ticketFooter = document.createElement("div");
+            ticketFooter.id = "ticketFooter";
+            var FtrTxt = document.createTextNode("Author:..");
+            ticketFooter.appendChild(FtrTxt);
+
+
+            tickets[i].appendChild(ticketHead);
+            tickets[i].appendChild(ticketBody);
+            tickets[i].appendChild(ticketFooter);
+            var element = document.getElementById("body")
+            element.appendChild(tickets[i]);
+
+            var hover =  false;
+            tickets[i].onmousedown = function () {
+                //tickets.forEach((a) => { a.style.position = "fixed";});
+                hover = true;
+
+            }
+
+            
+            //tickets[i].onmouseup = function (e) {
+            //    hover = false;
+            //    var numb1 = e.srcElement.style.top.match(/\d/g);
+            //    var numb2 = section2.style.top.match(/\d/g);
+            //    if (numb1 < numb2) {
+            //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
+            //        section1.appendChild(e.srcElement.parentElement);
+            //    } else {
+            //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
+            //        section2.appendChild(e.srcElement.parentElement);
+            //    }
+            //    for (var i = 0; i < tickets.length; i++) {
+            //        tickets[i].style = "ticket";
+            //    }
+
+            //}
+            tickets[i].draggable = true;
+            tickets[i].ondrag = function () { moveFunc(event); };
+            tickets[i].oncontextmenu = function (e) {
+                if (e.srcElement.id === "ticketBody") {
+                    var promptCmd = prompt("Content:", e.srcElement.innerHTML);
+                    if (promptCmd == null) {
+                        e.srcElement.innerHTML = e.srcElement.innerHTML;
+                       
+                    } else {
+                        e.srcElement.innerHTML = promptCmd;
+                    }
+
+                    
+                    return false;
+                }
+                //BodyTxt = prompt("Content:", "...");
+            };
+            
+            //var person = prompt("Please enter your name", "Harry Potter");
+            //if (person != null) {
+            //    document.getElementById("demo").innerHTML =
+            //    "Hello " + person + "! How are you today?";
+            //}
+         
+
+        }
+
+        function moveFunc(e) {
+            //if ( e.srcElement.id === "ticket") {
+                
+            //    e.srcElement.style.position = "absolute";
+            //    e.srcElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
+            //    e.srcElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
+            //} else {
+                
+            //    e.srcElement.parentElement.position = "absolute";
+            //    e.srcElement.parentElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
+            //    e.srcElement.parentElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
+            //}
+
+            //e.srcElement.innerHTML = coor;
+            //document.getElementById("demo").innerHTML = coor;
+        }
+    </script>
+    <!--<style type="text/css">
+        #move {
+            height: 100px;
+            width: 100px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: green;
+        }
+    </style>
+    <div id="move">
+        sdfsfsfs
+        sf
+        sdf
+        sf
+        sd
+        f
+        s
+    </div>-->
+    <!--<script type="text/javascript">
+			var div = document.getElementById('move');
+			document.addEventListener('mousemove',function(e) {
+				div.style.left = e.pageX+"px";
+				div.style.top = e.pageY+"px";
+			});
+    </script>-->
+</body>
+</html>

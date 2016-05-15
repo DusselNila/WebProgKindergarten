@@ -1,0 +1,110 @@
+﻿body {
+    background-color:rebeccapurple;
+}
+
+#ticket {
+    width:200px;
+    
+    background-color:white;
+    display:inline-table;
+    margin:6px;
+    border:groove;
+    border-width:2px;
+    border-color:black;
+    
+    position:page;
+   
+  
+    -moz-user-select: -moz-none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+#ticketBody {
+    /*pointer-events:none;*/
+}
+
+#section {
+    /*verhindert verschiebung beim ersten element*/
+    vertical-align:top;
+
+
+    top:0px;
+    margin:20px;
+    background-color:red;
+    width:500px;
+    min-height:400px;
+    display:inline-table;
+
+}
+
+
+#ticket-move {
+      width:200px;
+    
+    background-color:white;
+    display:inline-block;
+    margin:6px;
+    border:groove;
+    border-width:2px;
+    border-color:red;
+    
+    position:absolute;
+
+}
+
+#ticketHead {
+    padding:4px;
+    text-align:center;
+    text-overflow:ellipsis;
+    font-size:18px;
+    font-weight:bold;
+    background-color:gray;
+
+    /*pointer-events:none;*/
+
+   
+  
+
+}
+
+#ticket:hover {
+
+       animation-name: resize;
+  /*animation-duration: 1s;*/
+  animation-duration:0.3s;
+  /*animation-iteration-count: 4;*/
+  /*animation-direction: alternate;*/
+  /*animation-timing-function: ease-in-out;*/
+  position:center;
+  transform:scale(1.2,1.2);
+}
+
+@keyframes resize {
+  0% {
+    padding: 0;
+    transform:scale(1,1);
+  }
+  /*50% {
+      transform:scale(1.1,1.1);
+    padding: 20px 0px;
+    background-color:rgba(255,0,0,0.2);
+  }*/
+  100% {
+      transform:scale(1.2,1.2);
+    /*padding: 100px 0px;*/
+    /*background-color:rgba(255,0,0,0.9);*/
+  }
+}
+
+#ticketFooter {
+   
+    text-align:right;
+    text-overflow:ellipsis;
+    font-size:12px;
+    font-weight:bold;
+    background-color:gray;
+    
+
+}
