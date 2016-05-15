@@ -20,6 +20,59 @@
     event.preventDefault();
 }
 
+        function updatefunc(e) {
+
+            var sections = document.getElementsByTagName("SECTION");
+
+            var saveTickets = [];
+            var counter = 0;
+            for (var i = 0; i < sections.length; i++) {
+                var sectTickets = sections[i].children;
+                for (var cn = 0; cn < sectTickets.length; cn++) {
+
+                    saveTickets[counter] = Object.create(ticket);
+
+                   
+                    var children = sectTickets[cn].getElementsByTagName("div");
+
+                    
+
+                    for (var j = 0; j < children.length; j++) {
+                        if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
+                        {
+
+                            saveTickets[counter].Title = children[j].innerHTML;
+                        }else
+
+                            if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
+                        {
+
+                            saveTickets[counter].Body = children[j].innerHTML;
+                        }else
+
+                                if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
+                        {
+
+                            saveTickets[counter].Author = children[j].innerHTML;
+                        }
+                    }
+                    saveTickets[counter].SectionID = i;
+                    counter++;
+                }
+            }
+
+
+            localStorage.setItem("TicketData", JSON.stringify(saveTickets));
+
+            
+            var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
+            
+
+
+
+
+        }
+
     function drop(event) {
         event.preventDefault();
         
@@ -34,7 +87,7 @@
             }
             sectEle.appendChild(draggedEle);
         
-    
+            updatefunc(event);
     }
     var draggedEle;
     function dragStart(event) {
@@ -42,10 +95,23 @@
         event.dataTransfer.setData("Node", event.target.dataset.value);
     }
 
-        var tickets = [];
-        for (var i = 0; i < 70; i++) {
+    var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
 
-          
+    var tickets = [];
+   var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
+        for (var i = 0; i < (saveTickets==null?10:saveTickets.length); i++) {
+
+           
+            var currentTicket;
+            if (saveTickets == null) {
+
+                currentTicket = new Object(ticket);
+            } else {
+                currentTicket = saveTickets[i];
+            }
+
+            currentTicket.ID = i;
+
 
             tickets[i] = document.createElement("div");
             tickets[i].ondragstart = function () { dragStart(event); };
@@ -54,39 +120,42 @@
             var ticketHead = document.createElement("div");
             
             ticketHead.id = "ticketHead";
-            var HdrTxt = document.createTextNode("This is Ticket-Title: " + i);
+            var HdrTxt = document.createElement("div");
+            HdrTxt.id = "HdrTxt";
+            HdrTxt.innerHTML = currentTicket.Title;
             ticketHead.appendChild(HdrTxt);
-            var BodyTxt;
-            if (i === 30) {
-               BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf....is is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
+            var ticketDel = document.createElement("div");
+            ticketDel.innerHTML = "X";
+            ticketDel.id = "ticketDel";
+
+            ticketDel.onclick = function (e) {
+                e.srcElement.parentElement.parentElement.parentElement.removeChild(e.srcElement.parentElement.parentElement);
+            };
+            ticketHead.appendChild(ticketDel);
+            var BodyTxt = document.createTextNode(currentTicket.Body);
            
-            } else {
-                BodyTxt = document.createTextNode("This is the body text with the idea for the ticket bla bla bli blup... ... sfsfsf sdfsfsdfs sfsfsfsf sdfsfsfsf sdfsfsfsf.... ")
-            }
             var ticketBody = document.createElement("div");
             ticketBody.appendChild(BodyTxt);
             ticketBody.id = "ticketBody";
 
             var ticketFooter = document.createElement("div");
             ticketFooter.id = "ticketFooter";
-            var FtrTxt = document.createTextNode("Author:..");
+            var FtrTxt = document.createTextNode(currentTicket.Author);
             ticketFooter.appendChild(FtrTxt);
 
 
             tickets[i].appendChild(ticketHead);
             tickets[i].appendChild(ticketBody);
             tickets[i].appendChild(ticketFooter);
-            var element = document.getElementById("body")
-            element.appendChild(tickets[i]);
+            //var element = document.getElementById("body")
+            //element.appendChild(tickets[i]);
 
-            var hover =  false;
-            tickets[i].onmousedown = function () {
-                //tickets.forEach((a) => { a.style.position = "fixed";});
-                hover = true;
 
-            }
-
+            var sections = document.getElementsByTagName("SECTION");
+            sections[currentTicket.SectionID].appendChild(tickets[i]);
             
+
+           
             //tickets[i].onmouseup = function (e) {
             //    hover = false;
             //    var numb1 = e.srcElement.style.top.match(/\d/g);
@@ -106,7 +175,7 @@
             tickets[i].draggable = true;
             tickets[i].ondrag = function () { moveFunc(event); };
             tickets[i].oncontextmenu = function (e) {
-                if (e.srcElement.id === "ticketBody") {
+                if (e.srcElement.id === "ticketBody" || e.srcElement.id === "ticketFooter" || e.srcElement.id === "HdrTxt") {
                     var promptCmd = prompt("Content:", e.srcElement.innerHTML);
                     if (promptCmd == null) {
                         e.srcElement.innerHTML = e.srcElement.innerHTML;
@@ -116,8 +185,9 @@
                     }
 
                     
-                    return false;
+                   
                 }
+                return false;//disable default menu
                 //BodyTxt = prompt("Content:", "...");
             };
             

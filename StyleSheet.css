@@ -2,6 +2,40 @@
     background-color:rebeccapurple;
 }
 
+#ticketDel {
+   
+    display:inline-block;
+    background-color:darkgray;
+    /*float:left;
+    
+    position:absolute;*/
+    width:15%;
+    float:right;
+    
+}
+#HdrTxt {
+
+    display:inline;
+   width:85%;
+
+}
+
+#ticketHead {
+    
+    padding:4px;
+    text-align:center;
+    text-overflow:ellipsis;
+    font-size:18px;
+    font-weight:bold;
+    background-color:gray;
+    
+    /*pointer-events:none;*/
+
+   
+  
+
+}
+
 #ticket {
     width:200px;
     
@@ -54,20 +88,7 @@
 
 }
 
-#ticketHead {
-    padding:4px;
-    text-align:center;
-    text-overflow:ellipsis;
-    font-size:18px;
-    font-weight:bold;
-    background-color:gray;
 
-    /*pointer-events:none;*/
-
-   
-  
-
-}
 
 #ticket:hover {
 
