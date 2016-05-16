@@ -9,25 +9,29 @@
 
     <button id="crbutton" type="button" onclick="createTable()">create new table</button>
 
-    <section id="section1" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle1" oncontextmenu="edit('tabletitle1')">Idee</h1><button type="button" onclick="deleteTable('section1')">delete Table</button></section>
+    <button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
 
-    <section id="section2" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle2" oncontextmenu="edit('tabletitle2')">Umsetzung</h1><button type="button" onclick="deleteTable('section2')">delete Table</button></section>
+    <section id="section1" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 oncontextmenu="edit(event)">Idee</h1><button type="button" onclick="deleteTable(event)">delete Table</button></section>
 
-    <section id="section3" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 id="tabletitle3" oncontextmenu="edit('tabletitle3')">Fertig</h1><button type="button" onclick="deleteTable('section3')">delete Table</button></section>
+    <section id="section2" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 oncontextmenu="edit(event)">Umsetzung</h1><button type="button" onclick="deleteTable(event)">delete Table</button></section>
+
+    <section id="section3" ondrop="drop(event)" ondragover="allowDrop(event)"><h1 oncontextmenu="edit(event)">Fertig</h1><button type="button" onclick="deleteTable(event)">delete Table</button></section>
 
 
     <script>
         var section = [];
+        var tickets = [];
 
         function createTable()
         {
+            var i = 0;
             var entered = false;
             while (!entered)
             {
                 var _content = prompt("Title:", "New Table");
                 if (_content === "") {
 
-                    alert ("Please enter Title!");
+                    alert("Please enter Title!");
                 }
                 else if(_content!=null)
                 {
@@ -36,16 +40,15 @@
                     section[i] = document.createElement("section");
                     section[i].ondrop = function () { drop(event) };
                     section[i].ondragover = function () { allowDrop(event) };
-                    section[i].id = "section" + (i+4);
+                    //section[i].id = "section" + (i+4); //Nur falls Stil von einzelen Dingern unterschiedlich sein soll
 
                     var tttxt = document.createTextNode(_content);
                     var title = document.createElement("h1");
-                    title.id = "tabletitle" + (i+4);
-                    title.oncontextmenu = function () { edit("tabletitle" + (i+4)) };
+                    title.oncontextmenu = function () { edit(event) };
                     title.appendChild(tttxt);
 
                     var delbutton = document.createElement("button");
-                    delbutton.onclick = function () { deleteTable("section" + (i+4)) };
+                    delbutton.onclick = function () { deleteTable(event) };
                     delbutton.type = "button";
                     var butxt = document.createTextNode("delete Table");
                     delbutton.appendChild(butxt);
@@ -62,34 +65,159 @@
                 }
             
             }
+            i++
 
         }
 
-        function deleteTable(id)
+   function deleteTable(event)
         {
-            var element = document.getElementById(id);
+            var element = event.srcElement.parentElement;
             element.parentNode.removeChild(element);
         }
 
 
-        function edit(id) {
-
-            var _content = prompt("Title:", document.getElementById(id).innerHTML);
+   function edit(event) {
+            
+            event.preventDefault();
+            var _content = prompt("Title:", event.srcElement.innerHTML);
             if (_content != null && _content != "") {
-                document.getElementById(id).innerHTML = _content;
+                event.srcElement.innerHTML = _content;
             }
             else {
-                
-                document.getElementById(id).innerHTML = document.getElementById(id).innerHTML;
+
+                event.srcElement.innerHTML = event.srcElement.innerHTML;
             }
         }
 
-       function allowDrop(event) {
+   function createTicket() {
+
+       var j = 0;
+       var entered = false;
+
+       while (!entered) {
+           var headContent = prompt("Enter ticket-title:", "New Ticket");
+           if (headContent === "") {
+
+               alert("Please enter Title!");
+           }
+           else if (headContent == null)
+               return false;
+           else
+               entered = true;    
+       }
+       entered = false;
+
+       while (!entered) {
+           var bodyContent = prompt("Enter Content:", "New Content");
+           if (bodyContent === "") {
+
+               alert("Please enter Title!");
+           }
+           else if (bodyContent == null)
+               return false;
+           else
+               entered = true;
+       }
+       entered = false;
+
+       while (!entered) {
+           var footContent = prompt("Enter Author:", "New Author");
+           if (footContent === "") {
+
+               alert("Please enter Title!");
+           }
+           else if (footContent == null)
+               return false;
+           else
+               entered = true;
+       }
+
+    tickets[j] = document.createElement("div");
+    tickets[j].ondragstart = function () { dragStart(event); };
+    tickets[j].id = "ticket";
+
+    var HdrTxt = document.createTextNode(headContent);
+    var ticketHead = document.createElement("div");
+    ticketHead.id = "ticketHead";
+    ticketHead.appendChild(HdrTxt);
+
+    var BodyTxt = document.createTextNode(bodyContent);
+    var ticketBody = document.createElement("div");
+    ticketBody.id = "ticketBody";
+    ticketBody.appendChild(BodyTxt);
+
+    var FtrTxt = document.createTextNode(footContent);
+    var ticketFooter = document.createElement("div");
+    ticketFooter.id = "ticketFooter";
+    ticketFooter.appendChild(FtrTxt);
+
+
+    tickets[j].appendChild(ticketHead);
+    tickets[j].appendChild(ticketBody);
+    tickets[j].appendChild(ticketFooter);
+    var element = document.getElementById("body")
+    element.appendChild(tickets[j]);
+
+    var hover =  false;
+    tickets[j].onmousedown = function () {
+        //tickets.forEach((a) => { a.style.position = "fixed";});
+        hover = true;
+
+    }
+
+
+    //tickets[i].onmouseup = function (e) {
+    //    hover = false;
+    //    var numb1 = e.srcElement.style.top.match(/\d/g);
+    //    var numb2 = section2.style.top.match(/\d/g);
+    //    if (numb1 < numb2) {
+    //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
+    //        section1.appendChild(e.srcElement.parentElement);
+    //    } else {
+    //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
+    //        section2.appendChild(e.srcElement.parentElement);
+    //    }
+    //    for (var i = 0; i < tickets.length; i++) {
+    //        tickets[i].style = "ticket";
+    //    }
+
+    //}
+        tickets[j].draggable = true;
+        tickets[j].ondrag = function () { moveFunc(event); };
+        tickets[j].oncontextmenu = function (e) {
+            if (e.srcElement.id === "ticketBody") {
+                var promptCmd = prompt("Content:", e.srcElement.innerHTML);
+                if (promptCmd == null) {
+                    e.srcElement.innerHTML = e.srcElement.innerHTML;
+
+                } else {
+                    e.srcElement.innerHTML = promptCmd;
+                }
+
+
+                return false;
+            }
+            if (e.srcElement.id === "ticketFooter") {
+                var promptCmd = prompt("Author:", e.srcElement.innerHTML);
+                if (promptCmd == null) {
+                    e.srcElement.innerHTML = e.srcElement.innerHTML;
+
+                } else {
+                    e.srcElement.innerHTML = promptCmd;
+                }
+                return false;
+            }
+            //BodyTxt = prompt("Content:", "...");
+        }
+        j++;
+    }
+
+   function allowDrop(event) {
 
            event.preventDefault();
 }
 
-    function drop(event) {
+   function drop(event) {
         event.preventDefault();
 
         var data = event.dataTransfer.getData("Node");
@@ -111,7 +239,7 @@
         event.dataTransfer.setData("Node", event.target.dataset.value);
     }
 
-        var tickets = [];
+        /*var tickets = [];
         for (var i = 0; i < 70; i++) {
 
 
@@ -187,6 +315,16 @@
 
                     return false;
                 }
+                if (e.srcElement.id === "ticketFooter") {
+                    var promptCmd = prompt("Author:", e.srcElement.innerHTML);
+                    if (promptCmd == null) {
+                        e.srcElement.innerHTML = e.srcElement.innerHTML;
+
+                    } else {
+                        e.srcElement.innerHTML = promptCmd;
+                    }
+                    return false;
+                }
                 //BodyTxt = prompt("Content:", "...");
             };
 
@@ -214,7 +352,7 @@
 
             //e.srcElement.innerHTML = coor;
             //document.getElementById("demo").innerHTML = coor;
-        }
+        }*/
     </script>
     <!--<style type="text/css">
         #move {
