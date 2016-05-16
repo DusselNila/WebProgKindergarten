@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -14,7 +13,7 @@
 
 
 
-   
+
     <section id="section1" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h1 oncontextmenu="edit(event)">Idee</h1><button type="button" onclick="deleteTable(event)">delete Table</button>
         <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
@@ -22,18 +21,18 @@
 
 
 
-    
+
     <section id="section2" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h1 oncontextmenu="edit(event)">Umsetzung</h1><button type="button" onclick="deleteTable(event)">delete Table</button>
         <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
     </section>
 
 
-    
+
     <section id="section3" ondrop="drop(event)" ondragover="allowDrop(event)">
         <h1 oncontextmenu="edit(event)">Fertig</h1>
         <button type="button" onclick="deleteTable(event)">delete Table</button>
-        <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->   
+        <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
     </section>
 
 
@@ -74,30 +73,26 @@
                 else {
                     entered = true;
                 }
-
             }
             i++
         }
    function deleteTable(event)
         {
-            var element = event.srcElement.parentElement;
+            var element = event.target.parentElement;
             element.parentNode.removeChild(element);
         }
    function edit(event) {
-
             event.preventDefault();
-            var _content = prompt("Title:", event.srcElement.innerHTML);
+            var _content = prompt("Title:", event.target.innerHTML);
             if (_content != null && _content != "") {
-                event.srcElement.innerHTML = _content;
+                event.target.innerHTML = _content;
             }
             else {
-                event.srcElement.innerHTML = event.srcElement.innerHTML;
+                event.target.innerHTML = event.target.innerHTML;
             }
    }
    function updatefunc(e) {
-
        var sections = document.getElementsByTagName("SECTION");
-
        var saveTickets = [];
        var counter = 0;
        for (var i = 0; i < sections.length; i++) {
@@ -105,28 +100,18 @@
            for (var cn = 0; cn < sectTickets.length; cn++) {
                if (sectTickets[cn].id === "ticket") {
                    saveTickets[counter] = Object.create(ticket);
-
-
                    var children = sectTickets[cn].getElementsByTagName("div");
-
-
-
                    for (var j = 0; j < children.length; j++) {
                        if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
                        {
-
                            saveTickets[counter].Title = children[j].innerHTML;
                        } else
-
                            if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
                            {
-
                                saveTickets[counter].Body = children[j].innerHTML;
                            } else
-
                                if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
                                {
-
                                    saveTickets[counter].Author = children[j].innerHTML;
                                }
                    }
@@ -135,19 +120,10 @@
                }
            }
        }
-
-
        localStorage.setItem("TicketData", JSON.stringify(saveTickets));
-
-
        var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
 
-     
-
-
-
    }
-
    function createTicket() {
        var j = 0;
        var entered = false;
@@ -184,9 +160,8 @@
                entered = true;
        }
     tickets[j] = document.createElement("div");
-    tickets[j].ondragstart = function () { dragStart(event); };
+    tickets[j].ondragstart = function (event) { dragStart(event); };
     tickets[j].id = "ticket";
-
     var ticketHead = document.createElement("div");
     ticketHead.id = "ticketHead";
     var HdrTxt = document.createElement("div");
@@ -196,9 +171,10 @@
     var ticketDel = document.createElement("div");
     ticketDel.innerHTML = "X";
     ticketDel.id = "ticketDel";
+    ticketDel.onclick = function (e) {
+        e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+    };
     ticketHead.appendChild(ticketDel);
-
-
     var BodyTxt = document.createTextNode(bodyContent);
     var ticketBody = document.createElement("div");
     ticketBody.id = "ticketBody";
@@ -213,26 +189,26 @@
     var element = document.getElementById("body")
     element.appendChild(tickets[j]);
     var hover =  false;
-   
-  
+
+
         tickets[j].draggable = true;
-        
+
         tickets[j].oncontextmenu = function (e) {
-            if (e.srcElement.id === "ticketBody") {
-                var promptCmd = prompt("Content:", e.srcElement.innerHTML);
+            if (e.target.id === "ticketBody") {
+                var promptCmd = prompt("Content:", e.target.innerHTML);
                 if (promptCmd == null) {
-                    e.srcElement.innerHTML = e.srcElement.innerHTML;
+                    e.target.innerHTML = e.target.innerHTML;
                 } else {
-                    e.srcElement.innerHTML = promptCmd;
+                    e.target.innerHTML = promptCmd;
                 }
                 return false;
             }
-            if (e.srcElement.id === "ticketFooter") {
-                var promptCmd = prompt("Author:", e.srcElement.innerHTML);
+            if (e.target.id === "ticketFooter") {
+                var promptCmd = prompt("Author:", e.target.innerHTML);
                 if (promptCmd == null) {
-                    e.srcElement.innerHTML = e.srcElement.innerHTML;
+                    e.target.innerHTML = e.target.innerHTML;
                 } else {
-                    e.srcElement.innerHTML = promptCmd;
+                    e.target.innerHTML = promptCmd;
                 }
                 return false;
             }
@@ -245,46 +221,39 @@
 }
    function drop(event) {
         event.preventDefault();
-        var data = event.dataTransfer.getData("Node");
+       
         //event.target.appendChild(event.dataTransfer.getData(data));
            //drop in anderes Ticket verbieten
             var sectEle = event.target;
             while (sectEle.tagName != "SECTION") {
                 sectEle = sectEle.parentElement;
             }
+            
             sectEle.appendChild(draggedEle);
-
+           
+          
             updatefunc(event);
     }
     var draggedEle;
     function dragStart(event) {
-        draggedEle = event.srcElement;
-        event.dataTransfer.setData("Node", event.target.dataset.value);
+        draggedEle = event.target;
+        event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
     }
     var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
-
     var tickets = [];
     var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
     for (var i = 0; i < (saveTickets == null ? 10 : saveTickets.length) ; i++) {
-
-
         var currentTicket;
         if (saveTickets == null) {
-
             currentTicket = new Object(ticket);
         } else {
             currentTicket = saveTickets[i];
         }
-
         currentTicket.ID = i;
-
-
         tickets[i] = document.createElement("div");
-        tickets[i].ondragstart = function () { dragStart(event); };
+        tickets[i].ondragstart = function (event) { dragStart(event); };
         tickets[i].id = "ticket";
-
         var ticketHead = document.createElement("div");
-
         ticketHead.id = "ticketHead";
         var HdrTxt = document.createElement("div");
         HdrTxt.id = "HdrTxt";
@@ -293,77 +262,59 @@
         var ticketDel = document.createElement("div");
         ticketDel.innerHTML = "X";
         ticketDel.id = "ticketDel";
-
         ticketDel.onclick = function (e) {
-            e.srcElement.parentElement.parentElement.parentElement.removeChild(e.srcElement.parentElement.parentElement);
+            e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
         };
         ticketHead.appendChild(ticketDel);
         var BodyTxt = document.createTextNode(currentTicket.Body);
-
         var ticketBody = document.createElement("div");
         ticketBody.appendChild(BodyTxt);
         ticketBody.id = "ticketBody";
-
         var ticketFooter = document.createElement("div");
         ticketFooter.id = "ticketFooter";
         var FtrTxt = document.createTextNode(currentTicket.Author);
         ticketFooter.appendChild(FtrTxt);
-
-
         tickets[i].appendChild(ticketHead);
         tickets[i].appendChild(ticketBody);
         tickets[i].appendChild(ticketFooter);
         //var element = document.getElementById("body")
         //element.appendChild(tickets[i]);
-
-
         var sections = document.getElementsByTagName("SECTION");
         sections[currentTicket.SectionID].appendChild(tickets[i]);
-
-
-
         //tickets[i].onmouseup = function (e) {
         //    hover = false;
-        //    var numb1 = e.srcElement.style.top.match(/\d/g);
+        //    var numb1 = e.target.style.top.match(/\d/g);
         //    var numb2 = section2.style.top.match(/\d/g);
         //    if (numb1 < numb2) {
-        //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
-        //        section1.appendChild(e.srcElement.parentElement);
+        //        e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+        //        section1.appendChild(e.target.parentElement);
         //    } else {
-        //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
-        //        section2.appendChild(e.srcElement.parentElement);
+        //        e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+        //        section2.appendChild(e.target.parentElement);
         //    }
         //    for (var i = 0; i < tickets.length; i++) {
         //        tickets[i].style = "ticket";
         //    }
-
         //}
         tickets[i].draggable = true;
-        
+
         tickets[i].oncontextmenu = function (e) {
-            if (e.srcElement.id === "ticketBody" || e.srcElement.id === "ticketFooter" || e.srcElement.id === "HdrTxt") {
-                var promptCmd = prompt("Content:", e.srcElement.innerHTML);
+            if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+                var promptCmd = prompt("Content:", e.target.innerHTML);
                 if (promptCmd == null) {
-                    e.srcElement.innerHTML = e.srcElement.innerHTML;
-
+                    e.target.innerHTML = e.target.innerHTML;
                 } else {
-                    e.srcElement.innerHTML = promptCmd;
+                    e.target.innerHTML = promptCmd;
                 }
-
-
-
             }
             return false;//disable default menu
             //BodyTxt = prompt("Content:", "...");
         };
-
         //var person = prompt("Please enter your name", "Harry Potter");
         //if (person != null) {
         //    document.getElementById("demo").innerHTML =
         //    "Hello " + person + "! How are you today?";
         //}
-
-
     }
         /*var tickets = [];
         for (var i = 0; i < 70; i++) {
@@ -399,14 +350,14 @@
             }
             //tickets[i].onmouseup = function (e) {
             //    hover = false;
-            //    var numb1 = e.srcElement.style.top.match(/\d/g);
+            //    var numb1 = e.target.style.top.match(/\d/g);
             //    var numb2 = section2.style.top.match(/\d/g);
             //    if (numb1 < numb2) {
-            //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
-            //        section1.appendChild(e.srcElement.parentElement);
+            //        e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+            //        section1.appendChild(e.target.parentElement);
             //    } else {
-            //        e.srcElement.parentElement.parentElement.removeChild(e.srcElement.parentElement);
-            //        section2.appendChild(e.srcElement.parentElement);
+            //        e.target.parentElement.parentElement.removeChild(e.target.parentElement);
+            //        section2.appendChild(e.target.parentElement);
             //    }
             //    for (var i = 0; i < tickets.length; i++) {
             //        tickets[i].style = "ticket";
@@ -415,21 +366,21 @@
             tickets[i].draggable = true;
             tickets[i].ondrag = function () { moveFunc(event); };
             tickets[i].oncontextmenu = function (e) {
-                if (e.srcElement.id === "ticketBody") {
-                    var promptCmd = prompt("Content:", e.srcElement.innerHTML);
+                if (e.target.id === "ticketBody") {
+                    var promptCmd = prompt("Content:", e.target.innerHTML);
                     if (promptCmd == null) {
-                        e.srcElement.innerHTML = e.srcElement.innerHTML;
+                        e.target.innerHTML = e.target.innerHTML;
                     } else {
-                        e.srcElement.innerHTML = promptCmd;
+                        e.target.innerHTML = promptCmd;
                     }
                     return false;
                 }
-                if (e.srcElement.id === "ticketFooter") {
-                    var promptCmd = prompt("Author:", e.srcElement.innerHTML);
+                if (e.target.id === "ticketFooter") {
+                    var promptCmd = prompt("Author:", e.target.innerHTML);
                     if (promptCmd == null) {
-                        e.srcElement.innerHTML = e.srcElement.innerHTML;
+                        e.target.innerHTML = e.target.innerHTML;
                     } else {
-                        e.srcElement.innerHTML = promptCmd;
+                        e.target.innerHTML = promptCmd;
                     }
                     return false;
                 }
@@ -442,16 +393,16 @@
             //}
         }
         function moveFunc(e) {
-            //if ( e.srcElement.id === "ticket") {
-            //    e.srcElement.style.position = "absolute";
-            //    e.srcElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
-            //    e.srcElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
+            //if ( e.target.id === "ticket") {
+            //    e.target.style.position = "absolute";
+            //    e.target.style.left = e.pageX - (e.target.clientWidth / 2) + "px";
+            //    e.target.style.top = e.pageY - (e.target.clientHeight / 2) + "px";
             //} else {
-            //    e.srcElement.parentElement.position = "absolute";
-            //    e.srcElement.parentElement.style.left = e.pageX - (e.srcElement.clientWidth / 2) + "px";
-            //    e.srcElement.parentElement.style.top = e.pageY - (e.srcElement.clientHeight / 2) + "px";
+            //    e.target.parentElement.position = "absolute";
+            //    e.target.parentElement.style.left = e.pageX - (e.target.clientWidth / 2) + "px";
+            //    e.target.parentElement.style.top = e.pageY - (e.target.clientHeight / 2) + "px";
             //}
-            //e.srcElement.innerHTML = coor;
+            //e.target.innerHTML = coor;
             //document.getElementById("demo").innerHTML = coor;
         }*/
     </script>
@@ -483,4 +434,3 @@
     </script>-->
 </body>
 </html>
-
