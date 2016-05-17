@@ -53,9 +53,22 @@
         }
    function deleteTable(event)
         {
-            var element = event.target.parentElement;
-            element.parentNode.removeChild(element);
-            updatefuncSec();
+           var parent = event.target.parentElement;
+           var childs = parent.children;
+           var empty = true;
+           for (var i = 0; i < childs.length; i++) {
+               if (childs[i].id === "ticket") {
+                   empty = false;
+               }
+           }
+           if (empty === true) {
+               var element = event.target.parentElement;
+               element.parentNode.removeChild(element);
+               updatefuncSec(event);
+           }
+           else {
+               alert("Can't be deleted due to tickets");
+           }
         }
    function edit(event) {
             event.preventDefault();
@@ -164,6 +177,7 @@
     ticketDel.id = "ticketDel";
     ticketDel.onclick = function (e) {
         e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+        updatefunc(event);
     };
     ticketHead.appendChild(ticketDel);
     var BodyTxt = document.createTextNode(bodyContent);
@@ -257,6 +271,8 @@
         var element = document.getElementById("body")
         element.appendChild(section[i]);
     }
+
+        //Aufbau der Tickets aus dem Local Storage
     var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
     var tickets = [];
     var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
@@ -282,6 +298,7 @@
         ticketDel.id = "ticketDel";
         ticketDel.onclick = function (e) {
             e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+            updatefunc(event);
         };
         ticketHead.appendChild(ticketDel);
         var BodyTxt = document.createTextNode(currentTicket.Body);
