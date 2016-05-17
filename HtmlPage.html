@@ -12,9 +12,6 @@
     <button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
 
 
-    
-
-
     <script>
         var section = [];
         var tickets = [];
@@ -233,16 +230,32 @@
     var _Section = { header: "New Table", SecID: 0};
     var saveSections = JSON.parse(localStorage.getItem("SectionData"));
     var section = [];
-    for (var i = 0; i < saveSections.length; i++) {
+
+    for (var i = 0; i < (saveSections == null ? 3 : saveSections.length); i++) {
         var currentSec;
-        currentSec = saveSections[i];
-        currentSec.SecID = i;
+        var title = document.createElement("h1");
+        if (saveSections == null && i === 0)
+        {
+            title.innerHTML = "Idee";
+        }
+        else if (saveSections == null && i === 1)
+        {
+            title.innerHTML = "Umsetzung";
+        }
+        else if (saveSections == null && i === 2)
+        {
+            title.innerHTML = "Fertig";
+        }
+        else
+        {
+            currentSec = saveSections[i];
+            currentSec.SecID = i;
+            title.innerHTML = currentSec.header;
+        }
         section[i] = document.createElement("section");
         section[i].ondrop = function () { drop(event) };
         section[i].ondragover = function () { allowDrop(event) };
         section[i].id = "section"
-        var title = document.createElement("h1");
-        title.innerHTML = currentSec.header;
         title.oncontextmenu = function () { edit(event) };
         var delbutton = document.createElement("button");
         delbutton.onclick = function () { deleteTable(event) };
@@ -252,7 +265,6 @@
         section[i].appendChild(delbutton);
         var element = document.getElementById("body")
         element.appendChild(section[i]);
-
     }
 
     var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
