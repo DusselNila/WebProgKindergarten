@@ -12,33 +12,13 @@
     <button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
 
 
-
-
-    <section id="section1" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <h1 oncontextmenu="edit(event)">Idee</h1><button type="button" onclick="deleteTable(event)">delete Table</button>
-        <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
-    </section>
-
-
-
-
-    <section id="section2" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <h1 oncontextmenu="edit(event)">Umsetzung</h1><button type="button" onclick="deleteTable(event)">delete Table</button>
-        <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
-    </section>
-
-
-
-    <section id="section3" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <h1 oncontextmenu="edit(event)">Fertig</h1>
-        <button type="button" onclick="deleteTable(event)">delete Table</button>
-        <!--Hier darf nix drin sein da alles hier drinnen als ticket serialisiert wird-->
-    </section>
+    
 
 
     <script>
         var section = [];
         var tickets = [];
+
         function createTable()
         {
             var i = 0;
@@ -55,16 +35,14 @@
                     section[i] = document.createElement("section");
                     section[i].ondrop = function () { drop(event) };
                     section[i].ondragover = function () { allowDrop(event) };
-                    //section[i].id = "section" + (i+4); //Nur falls Stil von einzelen Dingern unterschiedlich sein soll
-                    var tttxt = document.createTextNode(_content);
+                    section[i].id = "section" 
                     var title = document.createElement("h1");
                     title.oncontextmenu = function () { edit(event) };
-                    title.appendChild(tttxt);
+                    title.innerHTML = _content;
                     var delbutton = document.createElement("button");
                     delbutton.onclick = function () { deleteTable(event) };
                     delbutton.type = "button";
-                    var butxt = document.createTextNode("delete Table");
-                    delbutton.appendChild(butxt);
+                    delbutton.innerHTML = "delete Table";
                     section[i].appendChild(title);
                     section[i].appendChild(delbutton);
                     var element = document.getElementById("body")
@@ -74,12 +52,14 @@
                     entered = true;
                 }
             }
-            i++
+            i++;
+            updatefuncSec(event);
         }
    function deleteTable(event)
         {
             var element = event.target.parentElement;
             element.parentNode.removeChild(element);
+            updatefuncSec(event);
         }
    function edit(event) {
             event.preventDefault();
@@ -90,6 +70,7 @@
             else {
                 event.target.innerHTML = event.target.innerHTML;
             }
+            updatefuncSec(event);
    }
    function updatefunc(e) {
        var sections = document.getElementsByTagName("SECTION");
@@ -124,6 +105,23 @@
        var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
 
    }
+
+   function updatefuncSec(event) {
+       var saveSections = [];
+       var counter = 0;
+       var bodychilds = document.body.children;
+           for (var i = 0; i < bodychilds.length; i++) {
+               if (bodychilds[i].id === "section") {
+                   saveSections[counter] = Object.create(_Section);
+                   var childs = bodychilds[i].getElementsByTagName("h1");
+                   saveSections[counter].header = childs[0].innerHTML;
+                   counter++;
+               }
+           }
+       localStorage.setItem("SectionData", JSON.stringify(saveSections));
+       var saveSections = JSON.parse(localStorage.getItem("SectionData"));
+   }
+
    function createTicket() {
        var j = 0;
        var entered = false;
@@ -194,26 +192,17 @@
         tickets[j].draggable = true;
 
         tickets[j].oncontextmenu = function (e) {
-            if (e.target.id === "ticketBody") {
+            if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
                 var promptCmd = prompt("Content:", e.target.innerHTML);
                 if (promptCmd == null) {
                     e.target.innerHTML = e.target.innerHTML;
                 } else {
                     e.target.innerHTML = promptCmd;
                 }
-                return false;
             }
-            if (e.target.id === "ticketFooter") {
-                var promptCmd = prompt("Author:", e.target.innerHTML);
-                if (promptCmd == null) {
-                    e.target.innerHTML = e.target.innerHTML;
-                } else {
-                    e.target.innerHTML = promptCmd;
-                }
-                return false;
-            }
+            return false;//disable default menu
             //BodyTxt = prompt("Content:", "...");
-        }
+        };
         j++;
     }
    function allowDrop(event) {
@@ -239,6 +228,33 @@
         draggedEle = event.target;
         event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
     }
+
+        //Aufbau der Sections aus Local Storage
+    var _Section = { header: "New Table", SecID: 0};
+    var saveSections = JSON.parse(localStorage.getItem("SectionData"));
+    var section = [];
+    for (var i = 0; i < saveSections.length; i++) {
+        var currentSec;
+        currentSec = saveSections[i];
+        currentSec.SecID = i;
+        section[i] = document.createElement("section");
+        section[i].ondrop = function () { drop(event) };
+        section[i].ondragover = function () { allowDrop(event) };
+        section[i].id = "section"
+        var title = document.createElement("h1");
+        title.innerHTML = currentSec.header;
+        title.oncontextmenu = function () { edit(event) };
+        var delbutton = document.createElement("button");
+        delbutton.onclick = function () { deleteTable(event) };
+        delbutton.type = "button";
+        delbutton.innerHTML = "delete Table";
+        section[i].appendChild(title);
+        section[i].appendChild(delbutton);
+        var element = document.getElementById("body")
+        element.appendChild(section[i]);
+
+    }
+
     var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
     var tickets = [];
     var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
