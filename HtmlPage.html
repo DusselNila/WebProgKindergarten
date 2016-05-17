@@ -15,7 +15,6 @@
     <script>
         var section = [];
         var tickets = [];
-
         function createTable()
         {
             var i = 0;
@@ -30,14 +29,14 @@
                 {
                     entered = true;
                     section[i] = document.createElement("section");
-                    section[i].ondrop = function () { drop(event) };
-                    section[i].ondragover = function () { allowDrop(event) };
-                    section[i].id = "section" 
+                    section[i].ondrop = function (event) { drop(event) };
+                    section[i].ondragover = function (event) { allowDrop(event) };
+                    section[i].id = "section"
                     var title = document.createElement("h1");
-                    title.oncontextmenu = function () { edit(event) };
+                    title.oncontextmenu = function (event) { edit(event) };
                     title.innerHTML = _content;
                     var delbutton = document.createElement("button");
-                    delbutton.onclick = function () { deleteTable(event) };
+                    delbutton.onclick = function (event) { deleteTable(event) };
                     delbutton.type = "button";
                     delbutton.innerHTML = "delete Table";
                     section[i].appendChild(title);
@@ -50,13 +49,13 @@
                 }
             }
             i++;
-            updatefuncSec(event);
+            updatefuncSec();
         }
    function deleteTable(event)
         {
             var element = event.target.parentElement;
             element.parentNode.removeChild(element);
-            updatefuncSec(event);
+            updatefuncSec();
         }
    function edit(event) {
             event.preventDefault();
@@ -67,7 +66,7 @@
             else {
                 event.target.innerHTML = event.target.innerHTML;
             }
-            updatefuncSec(event);
+            updatefuncSec();
    }
    function updatefunc(e) {
        var sections = document.getElementsByTagName("SECTION");
@@ -100,10 +99,8 @@
        }
        localStorage.setItem("TicketData", JSON.stringify(saveTickets));
        var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
-
    }
-
-   function updatefuncSec(event) {
+   function updatefuncSec() {
        var saveSections = [];
        var counter = 0;
        var bodychilds = document.body.children;
@@ -118,7 +115,6 @@
        localStorage.setItem("SectionData", JSON.stringify(saveSections));
        var saveSections = JSON.parse(localStorage.getItem("SectionData"));
    }
-
    function createTicket() {
        var j = 0;
        var entered = false;
@@ -184,10 +180,7 @@
     var element = document.getElementById("body")
     element.appendChild(tickets[j]);
     var hover =  false;
-
-
         tickets[j].draggable = true;
-
         tickets[j].oncontextmenu = function (e) {
             if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
                 var promptCmd = prompt("Content:", e.target.innerHTML);
@@ -207,17 +200,17 @@
 }
    function drop(event) {
         event.preventDefault();
-       
+
         //event.target.appendChild(event.dataTransfer.getData(data));
            //drop in anderes Ticket verbieten
             var sectEle = event.target;
             while (sectEle.tagName != "SECTION") {
                 sectEle = sectEle.parentElement;
             }
-            
+
             sectEle.appendChild(draggedEle);
-           
-          
+
+
             updatefunc(event);
     }
     var draggedEle;
@@ -225,12 +218,10 @@
         draggedEle = event.target;
         event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
     }
-
         //Aufbau der Sections aus Local Storage
     var _Section = { header: "New Table", SecID: 0};
     var saveSections = JSON.parse(localStorage.getItem("SectionData"));
     var section = [];
-
     for (var i = 0; i < (saveSections == null ? 3 : saveSections.length); i++) {
         var currentSec;
         var title = document.createElement("h1");
@@ -253,12 +244,12 @@
             title.innerHTML = currentSec.header;
         }
         section[i] = document.createElement("section");
-        section[i].ondrop = function () { drop(event) };
-        section[i].ondragover = function () { allowDrop(event) };
+        section[i].ondrop = function (event) { drop(event) };
+        section[i].ondragover = function (event) { allowDrop(event) };
         section[i].id = "section"
-        title.oncontextmenu = function () { edit(event) };
+        title.oncontextmenu = function (event) { edit(event) };
         var delbutton = document.createElement("button");
-        delbutton.onclick = function () { deleteTable(event) };
+        delbutton.onclick = function (event) { deleteTable(event) };
         delbutton.type = "button";
         delbutton.innerHTML = "delete Table";
         section[i].appendChild(title);
@@ -266,7 +257,6 @@
         var element = document.getElementById("body")
         element.appendChild(section[i]);
     }
-
     var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
     var tickets = [];
     var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
@@ -325,7 +315,6 @@
         //    }
         //}
         tickets[i].draggable = true;
-
         tickets[i].oncontextmenu = function (e) {
             if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
                 var promptCmd = prompt("Content:", e.target.innerHTML);
