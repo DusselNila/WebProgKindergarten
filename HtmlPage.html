@@ -1,338 +1,339 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Projektverwaltung</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="StyleSheet.css">
+	<title>Projektverwaltung</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="StyleSheet.css">
 </head>
 <body id="body">
 	
 	<!-- alternative geschaffen
-    <button id="crbutton" type="button" onclick="createTable()">create new table</button>
-    -->
-
-    <button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
-
-
-    <script>
-        var section = [];
-        var tickets = [];
-        function createTable()
-        {
-            var i = 0;
-            var entered = false;
-            while (!entered)
-            {
-                var _content = prompt("Title:", "New Table");
-                if (_content === "") {
-                    alert("Please enter Title!");
-                }
-                else if(_content!=null)
-                {
-                    entered = true;
-                    section[i] = document.createElement("section");
-                    section[i].ondrop = function (event) { drop(event) };
-                    section[i].ondragover = function (event) { allowDrop(event) };
-                    section[i].id = "section"
-                    var title = document.createElement("h1");
-                    title.oncontextmenu = function (event) { edit(event) };
-                    title.innerHTML = _content;
-                    var delbutton = document.createElement("button");
-                    delbutton.onclick = function (event) { deleteTable(event) };
-                    delbutton.type = "button";
-                    delbutton.innerHTML = "delete Table";
-                    section[i].appendChild(title);
-                    section[i].appendChild(delbutton);
-                    var element = document.getElementById("body")
-                    element.appendChild(section[i]);
-                }
-                else {
-                    entered = true;
-                }
-            }
-            i++;
-            updatefuncSec();
-        }
-        
-   		function deleteTable(event)
-        {
-           	var parent = event.target.parentElement;
-           	var childs = parent.children;
-           	var empty = true;
-           	for (var i = 0; i < childs.length; i++) {
-               	if (childs[i].id === "ticket") {
-                   	empty = false;
-               	}
-           	}
-           	if (empty === true) {
-               	var element = event.target.parentElement;
-               	element.parentNode.removeChild(element);
-               	updatefuncSec(event);
-           	}
-           	else {
-               	alert("Can't be deleted due to tickets");
-           	}
-        }
-   		
-   		function edit(event) {
-            event.preventDefault();
-            var _content = prompt("Title:", event.target.innerHTML);
-            if (_content != null && _content != "") {
-                event.target.innerHTML = _content;
-            }
-            else {
-                event.target.innerHTML = event.target.innerHTML;
-            }
-            updatefuncSec();
-   		}
-   		
-   		function updatefunc() {
-	       	var sections = document.getElementsByTagName("SECTION");
-	       	var saveTickets = [];
-	       	var counter = 0;
-	       	for (var i = 0; i < sections.length; i++) {
-	           	var sectTickets = sections[i].children;
-	           	for (var cn = 0; cn < sectTickets.length; cn++) {
-	               	if (sectTickets[cn].id === "ticket") {
-	                   	saveTickets[counter] = Object.create(ticket);
-	                   	var children = sectTickets[cn].getElementsByTagName("div");
-	                   	for (var j = 0; j < children.length; j++) {
-	                       	if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
-	                       	{
-	                           	saveTickets[counter].Title = children[j].innerHTML;
-	                       	} else
-	                           	if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
-	                           	{
-	                               	saveTickets[counter].Body = children[j].innerHTML;
-	                           	} else
-	                               	if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
-	                               	{
-	                                   	saveTickets[counter].Author = children[j].innerHTML;
-	                               	}
-	                   	}
-	                   	saveTickets[counter].SectionID = i;
-	                   	counter++;
-	               	}
-	           	}
-	       	}
-	       	localStorage.setItem("TicketData", JSON.stringify(saveTickets));
-	       	var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
-	   	}
-   		
-		function updatefuncSec() {
-	       	var saveSections = [];
-	       	var counter = 0;
-	       	var bodychilds = document.body.children;
-	           	for (var i = 0; i < bodychilds.length; i++) {
-	               	if (bodychilds[i].id === "section") {
-	                   	saveSections[counter] = Object.create(_Section);
-	                   	var childs = bodychilds[i].getElementsByTagName("h1");
-	                   	saveSections[counter].header = childs[0].innerHTML;
-	                   	counter++;
-	               	}
-	           	}
-	       	localStorage.setItem("SectionData", JSON.stringify(saveSections));
-	       	var saveSections = JSON.parse(localStorage.getItem("SectionData"));
-	   	}
-		
-   		function createTicket() {
-       		var j = 0;
-       		var entered = false;
-       		while (!entered) {
-           		var headContent = prompt("Enter ticket-title:", "New Ticket");
-           		if (headContent === "") {
-               		alert("Please enter Title!");
-           		}
-           		else if (headContent == null)
-               		return false;
-           		else
-               		entered = true;
-       		}
-       		entered = false;
-       		while (!entered) {
-           		var bodyContent = prompt("Enter Content:", "New Content");
-           		if (bodyContent === "") {
-               		alert("Please enter Title!");
-           		}
-           		else if (bodyContent == null)
-               		return false;
-           		else
-               		entered = true;
-       		}
-       		entered = false;
-       		while (!entered) {
-           		var footContent = prompt("Enter Author:", "New Author");
-           		if (footContent === "") {
-               		alert("Please enter Title!");
-           		}
-           		else if (footContent == null)
-               		return false;
-           		else
-               		entered = true;
-       		}
-    		tickets[j] = document.createElement("div");
-    		tickets[j].ondragstart = function (event) { dragStart(event); };
-    		tickets[j].id = "ticket";
-    		var ticketHead = document.createElement("div");
-    		ticketHead.id = "ticketHead";
-    		//TODO Ticket ändern
-   			var HdrTxt = document.createElement("div");
-    		HdrTxt.id = "HdrTxt";
-    		HdrTxt.innerHTML = headContent;
-    		ticketHead.appendChild(HdrTxt);
-    		var ticketDel = document.createElement("div");
-    		ticketDel.id = "ticketDel";
-    		ticketDel.onclick = function (e) {
-        		e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
-        		updatefunc();
-    		};
-    		ticketHead.appendChild(ticketDel);
-    		var BodyTxt = document.createTextNode(bodyContent);
-    		var ticketBody = document.createElement("div");
-    		ticketBody.id = "ticketBody";
-    		ticketBody.appendChild(BodyTxt);
-    		var FtrTxt = document.createTextNode(footContent);
-    		var ticketFooter = document.createElement("div");
-    		ticketFooter.id = "ticketFooter";
-    		ticketFooter.appendChild(FtrTxt);
-    		tickets[j].appendChild(ticketHead);
-    		tickets[j].appendChild(ticketBody);
-    		tickets[j].appendChild(ticketFooter);
-    		var element = document.getElementById("body");
-    		element.appendChild(tickets[j]);
-    		var hover =  false;
-        	tickets[j].draggable = true;
-        	tickets[j].oncontextmenu = function (e) {
-            		if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
-                		var promptCmd = prompt("Content:", e.target.innerHTML);
-                		if (promptCmd == null) {
-                    		e.target.innerHTML = e.target.innerHTML;
-                		} else {
-                    		e.target.innerHTML = promptCmd;
-                		}
-            		}
-            		return false;//disable default menu
-            		//BodyTxt = prompt("Content:", "...");
-        	};
-        	j++;
-    	}
-   		
-   		function allowDrop(event) {
-           	event.preventDefault();
+	<button id="crbutton" type="button" onclick="createTable()">create new table</button>
+	-->
+	
+	<button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
+	
+	
+	<script>
+		var section = [];
+		var tickets = [];
+		function createTable()
+		{
+			var i = 0;
+			var entered = false;
+			while (!entered)
+			{
+				var _content = prompt("Title:", "New Table");
+				if (_content === "") {
+					alert("Please enter Title!");
+				}
+				else if(_content!=null)
+				{
+					entered = true;
+					section[i] = document.createElement("section");
+					section[i].ondrop = function (event) { drop(event) };
+					section[i].ondragover = function (event) { allowDrop(event) };
+					section[i].id = "section"
+					var title = document.createElement("h1");
+					title.oncontextmenu = function (event) { edit(event) };
+					title.innerHTML = _content;
+					var delbutton = document.createElement("button");
+					delbutton.onclick = function (event) { deleteTable(event) };
+					delbutton.type = "button";
+					delbutton.innerHTML = "delete Table";
+					section[i].appendChild(title);
+					section[i].appendChild(delbutton);
+					var element = document.getElementById("body")
+					element.appendChild(section[i]);
+				}
+				else {
+					entered = true;
+				}
+			}
+			i++;
+			updatefuncSec();
 		}
-   		
-   		function drop(event) {
-        	event.preventDefault();
-        	//event.target.appendChild(event.dataTransfer.getData(data));
-           	//drop in anderes Ticket verbieten
-            var sectEle = event.target;
-            while (sectEle.tagName != "SECTION") {
-                sectEle = sectEle.parentElement;
-            }
-            sectEle.appendChild(draggedEle);
-            updatefunc();
-    	}
-   		
-    	var draggedEle;
-    	function dragStart(event) {
-        	draggedEle = event.target;
-        	event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
-    	}
-    	
-        //Aufbau der Sections aus Local Storage
-    	var _Section = { header: "New Table", SecID: 0};
-    	var saveSections = JSON.parse(localStorage.getItem("SectionData"));
-    	var section = [];
-    	for (var i = 0; i < (saveSections == null ? 3 : saveSections.length); i++) {
-        	var currentSec;
-        	var title = document.createElement("h1");
-        	if (saveSections == null && i === 0) {
-            	title.innerHTML = "Idee";
-        	}
-        	else if (saveSections == null && i === 1) {
-            	title.innerHTML = "Umsetzung";
-        	}
-        	else if (saveSections == null && i === 2) {
-            	title.innerHTML = "Fertig";
-        	}
-        	else {
-            	currentSec = saveSections[i];
-            	currentSec.SecID = i;
-            	title.innerHTML = currentSec.header;
-        	}
-        	section[i] = document.createElement("section");
-        	section[i].ondrop = function (event) { drop(event) };
-        	section[i].ondragover = function (event) { allowDrop(event) };
-        	section[i].id = "section"
-        	title.oncontextmenu = function (event) { edit(event) };
-        	var delbutton = document.createElement("button");
-        	delbutton.onclick = function (event) { deleteTable(event) };
-        	delbutton.type = "button";
-        	delbutton.innerHTML = "delete Table";
-        	section[i].appendChild(title);
-        	section[i].appendChild(delbutton);
-        	var element = document.getElementById("body")
-        	element.appendChild(section[i]);
-    	}
-        //Aufbau der Tickets aus dem Local Storage
-    	var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
-    	var tickets = [];
-    	var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
-    	for (var i = 0; i < (saveTickets == null ? 10 : saveTickets.length) ; i++) {
-        	var currentTicket;
-        	if (saveTickets == null) {
-        	    currentTicket = new Object(ticket);
-        	} else {
-            	currentTicket = saveTickets[i];
-        	}
-        	currentTicket.ID = i;
-        	tickets[i] = document.createElement("div");
-        	tickets[i].ondragstart = function (event) { dragStart(event); };
-        	tickets[i].id = "ticket";
-        	var ticketHead = document.createElement("div");
-        	ticketHead.id = "ticketHead";
-        	var HdrTxt = document.createElement("div");
-        	HdrTxt.id = "HdrTxt";
-        	HdrTxt.innerHTML = currentTicket.Title;
-        	ticketHead.appendChild(HdrTxt);
-        	var ticketDel = document.createElement("div");
-        	ticketDel.id = "ticketDel";
-        	ticketDel.onclick = function (e) {
-            	e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
-            	updatefunc();
-        	};
-        	ticketHead.appendChild(ticketDel);
-        	var BodyTxt = document.createTextNode(currentTicket.Body);
-        	var ticketBody = document.createElement("div");
-        	ticketBody.appendChild(BodyTxt);
-        	ticketBody.id = "ticketBody";
-        	var ticketFooter = document.createElement("div");
-        	ticketFooter.id = "ticketFooter";
-        	var FtrTxt = document.createTextNode(currentTicket.Author);
-        	ticketFooter.appendChild(FtrTxt);
-        	tickets[i].appendChild(ticketHead);
-        	tickets[i].appendChild(ticketBody);
-        	tickets[i].appendChild(ticketFooter);
-       
-        	var sections = document.getElementsByTagName("SECTION");
-        	sections[currentTicket.SectionID].appendChild(tickets[i]);
-        
-        	tickets[i].draggable = true;
-        	tickets[i].oncontextmenu = function (e) {
-            if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
-                var promptCmd = prompt("Content:", e.target.innerHTML);
-                if (promptCmd == null) {
-                    e.target.innerHTML = e.target.innerHTML;
-                } else {
-                    e.target.innerHTML = promptCmd;
-                }
-            }
-            return false;//disable default menu
-            //BodyTxt = prompt("Content:", "...");
-        };  
-    }  
-    </script>
-   
+		
+		function deleteTable(event)
+		{
+			var parent = event.target.parentElement;
+			var childs = parent.children;
+			var empty = true;
+			for (var i = 0; i < childs.length; i++) {
+				if (childs[i].id === "ticket") {
+					empty = false;
+				}
+			}
+			if (empty === true) {
+				var element = event.target.parentElement;
+				element.parentNode.removeChild(element);
+				updatefuncSec(event);
+			}
+			else {
+				alert("Can't be deleted due to tickets");
+			}
+		}
+		
+		function edit(event) {
+			event.preventDefault();
+			var _content = prompt("Title:", event.target.innerHTML);
+			if (_content != null && _content != "") {
+				event.target.innerHTML = _content;
+			}
+			else {
+				event.target.innerHTML = event.target.innerHTML;
+			}
+			updatefuncSec();
+		}
+		
+		function updatefunc() {
+			var sections = document.getElementsByTagName("SECTION");
+			var saveTickets = [];
+			var counter = 0;
+			for (var i = 0; i < sections.length; i++) {
+				var sectTickets = sections[i].children;
+				for (var cn = 0; cn < sectTickets.length; cn++) {
+					if (sectTickets[cn].id === "ticket") {
+						saveTickets[counter] = Object.create(ticket);
+						var children = sectTickets[cn].getElementsByTagName("div");
+						for (var j = 0; j < children.length; j++) {
+							if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
+							{
+								saveTickets[counter].Title = children[j].innerHTML;
+							} else
+								if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
+								{
+									saveTickets[counter].Body = children[j].innerHTML;
+								} else
+									if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
+									{
+										saveTickets[counter].Author = children[j].innerHTML;
+									}
+						}
+						saveTickets[counter].SectionID = i;
+						counter++;
+					}
+				}
+			}
+			localStorage.setItem("TicketData", JSON.stringify(saveTickets));
+			var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
+		}
+		
+		function updatefuncSec() {
+			var saveSections = [];
+			var counter = 0;
+			var bodychilds = document.body.children;
+			for (var i = 0; i < bodychilds.length; i++) {
+				if (bodychilds[i].id === "section") {
+					saveSections[counter] = Object.create(_Section);
+					var childs = bodychilds[i].getElementsByTagName("h1");
+					saveSections[counter].header = childs[0].innerHTML;
+					counter++;
+				}
+			}
+			localStorage.setItem("SectionData", JSON.stringify(saveSections));
+			var saveSections = JSON.parse(localStorage.getItem("SectionData"));
+		}
+		
+		function createTicket() {
+			var j = 0;
+			var entered = false;
+			while (!entered) {
+				var headContent = prompt("Enter ticket-title:", "New Ticket");
+				if (headContent === "") {
+					alert("Please enter Title!");
+				}
+				else if (headContent == null)
+					return false;
+				else
+				entered = true;
+			}
+			entered = false;
+			while (!entered) {
+				var bodyContent = prompt("Enter Content:", "New Content");
+				if (bodyContent === "") {
+					alert("Please enter Content!");
+				}
+				else if (bodyContent == null)
+					return false;
+				else
+					entered = true;
+			}
+			entered = false;
+			while (!entered) {
+				var footContent = prompt("Enter Author:", "New Author");
+				if (footContent === "") {
+					alert("Please enter Author!");
+				}
+				else if (footContent == null)
+					return false;
+				else
+				entered = true;
+			}
+			tickets[j] = document.createElement("div");
+			tickets[j].ondragstart = function (event) { dragStart(event); };
+			tickets[j].id = "ticket";
+			var ticketHead = document.createElement("div");
+			ticketHead.id = "ticketHead";
+			//TODO Ticket ändern
+			var HdrTxt = document.createElement("div");
+			HdrTxt.id = "HdrTxt";
+			HdrTxt.innerHTML = headContent;
+			ticketHead.appendChild(HdrTxt);
+			var ticketDel = document.createElement("div");
+			ticketDel.id = "ticketDel";
+			ticketDel.onclick = function (e) {
+				e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+				updatefunc();
+			};
+			ticketHead.appendChild(ticketDel);
+			var BodyTxt = document.createTextNode(bodyContent);
+			var ticketBody = document.createElement("div");
+			ticketBody.id = "ticketBody";
+			ticketBody.appendChild(BodyTxt);
+			var FtrTxt = document.createTextNode(footContent);
+			var ticketFooter = document.createElement("div");
+			ticketFooter.id = "ticketFooter";
+			ticketFooter.appendChild(FtrTxt);
+			tickets[j].appendChild(ticketHead);
+			tickets[j].appendChild(ticketBody);
+			tickets[j].appendChild(ticketFooter);
+			var element = document.getElementById("body");
+			element.appendChild(tickets[j]);
+			var hover =  false;
+			tickets[j].draggable = true;
+			tickets[j].oncontextmenu = function (e) {
+				if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+					var promptCmd = prompt("Content:", e.target.innerHTML);
+					if (promptCmd == null) {
+						e.target.innerHTML = e.target.innerHTML;
+					} else {
+						e.target.innerHTML = promptCmd;
+					}
+				}
+				return false;//disable default menu
+				//BodyTxt = prompt("Content:", "...");
+			};
+			j++;
+		}
+		
+		function allowDrop(event) {
+			event.preventDefault();
+		}
+		
+		function drop(event) {
+			event.preventDefault();
+			//event.target.appendChild(event.dataTransfer.getData(data));
+			//drop in anderes Ticket verbieten
+			var sectEle = event.target;
+			while (sectEle.tagName != "SECTION") {
+				sectEle = sectEle.parentElement;
+			}
+			sectEle.appendChild(draggedEle);
+			updatefunc();
+		}
+		
+		var draggedEle;
+		function dragStart(event) {
+			draggedEle = event.target;
+			event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
+		}
+		
+		//Aufbau der Sections aus Local Storage
+		var _Section = { header: "New Table", SecID: 0};
+		var saveSections = JSON.parse(localStorage.getItem("SectionData"));
+		var section = [];
+		for (var i = 0; i < (saveSections == null ? 3 : saveSections.length); i++) {
+			var currentSec;
+			var title = document.createElement("h1");
+			if (saveSections == null && i === 0) {
+				title.innerHTML = "Idee";
+			}
+			else if (saveSections == null && i === 1) {
+				title.innerHTML = "Umsetzung";
+			}
+			else if (saveSections == null && i === 2) {
+				title.innerHTML = "Fertig";
+			}
+			else {
+				currentSec = saveSections[i];
+				currentSec.SecID = i;
+				title.innerHTML = currentSec.header;
+			}
+			section[i] = document.createElement("section");
+			section[i].ondrop = function (event) { drop(event) };
+			section[i].ondragover = function (event) { allowDrop(event) };
+			section[i].id = "section";
+			title.oncontextmenu = function (event) { edit(event) };
+			var delbutton = document.createElement("button");
+			delbutton.onclick = function (event) { deleteTable(event) };
+			delbutton.type = "button";
+			delbutton.innerHTML = "delete Table";
+			section[i].appendChild(title);
+			section[i].appendChild(delbutton);
+			var element = document.getElementById("body");
+			element.appendChild(section[i]);
+		}
+		
+		//Aufbau der Tickets aus dem Local Storage
+		var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
+		var tickets = [];
+		var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
+		for (var i = 0; i < (saveTickets == null ? 10 : saveTickets.length) ; i++) {
+			var currentTicket;
+			if (saveTickets == null) {
+				currentTicket = new Object(ticket);
+			} else {
+				currentTicket = saveTickets[i];
+			}
+			currentTicket.ID = i;
+			tickets[i] = document.createElement("div");
+			tickets[i].ondragstart = function (event) { dragStart(event); };
+			tickets[i].id = "ticket";
+			var ticketHead = document.createElement("div");
+			ticketHead.id = "ticketHead";
+			var HdrTxt = document.createElement("div");
+			HdrTxt.id = "HdrTxt";
+			HdrTxt.innerHTML = currentTicket.Title;
+			ticketHead.appendChild(HdrTxt);
+			var ticketDel = document.createElement("div");
+			ticketDel.id = "ticketDel";
+			ticketDel.onclick = function (e) {
+				e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+				updatefunc();
+			};
+			ticketHead.appendChild(ticketDel);
+			var BodyTxt = document.createTextNode(currentTicket.Body);
+			var ticketBody = document.createElement("div");
+			ticketBody.appendChild(BodyTxt);
+			ticketBody.id = "ticketBody";
+			var ticketFooter = document.createElement("div");
+			ticketFooter.id = "ticketFooter";
+			var FtrTxt = document.createTextNode(currentTicket.Author);
+			ticketFooter.appendChild(FtrTxt);
+			tickets[i].appendChild(ticketHead);
+			tickets[i].appendChild(ticketBody);
+			tickets[i].appendChild(ticketFooter);
+			
+			var sections = document.getElementsByTagName("SECTION");
+			sections[currentTicket.SectionID].appendChild(tickets[i]);
+			
+			tickets[i].draggable = true;
+			tickets[i].oncontextmenu = function (e) {
+				if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+					var promptCmd = prompt("Content:", e.target.innerHTML);
+					if (promptCmd == null) {
+						e.target.innerHTML = e.target.innerHTML;
+					} else {
+						e.target.innerHTML = promptCmd;
+					}
+				}
+				return false;//disable default menu
+				//BodyTxt = prompt("Content:", "...");
+			};  
+		}
+	</script>
+	
 	<div id="addSection" onclick="createTable()">
 		<h1>Neuen Bereich erstellen</h1>
 	</div>

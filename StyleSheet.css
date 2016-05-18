@@ -1,108 +1,108 @@
 body {
-    background-color:rgb(230,230,230);
+	background-color:rgb(230,230,230);
 }
 
 #HdrTxt {
-    display:inline;
-   	width:85%;
+	display:inline;
+	width:85%;
 }
 
 #ticket {
-    width:200px;
-    height:200px;
-    /*background-color:white;*/
-    background-image:url("Bilder/Notizzettel.png");
-    display:inline-table;
-    margin:10px;
-    /*border:groove;
-    border-width:2px;
-    border-color:black;*/
-    
-    position:page;
-  
-    -moz-user-select: -moz-none;
-   	-webkit-user-select: none;
-   	-ms-user-select: none;
-   	user-select: none;
-   	
-   	-moz-box-shadow: 5px 5px 5px grey;
+	width:200px;
+	height:200px;
+	/*background-color:white;*/
+	background-image:url("Bilder/Notizzettel.png");
+	display:inline-table;
+	margin:10px;
+	/*border:groove;
+	border-width:2px;
+	border-color:black;*/
+	
+	position:page;
+	
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	
+	-moz-box-shadow: 5px 5px 5px grey;
 	-webkit-box-shadow: 5px 5px 5px grey;
 	box-shadow: 5px 5px 5px grey;
 }
 
 #ticketHead {
-    padding:4px;
-    text-align:center;
-    text-overflow:ellipsis;
-    font-size:18px;
-    font-weight:bold;
-    background-color:rgb(245,225,85);
-    
-    /*pointer-events:none;*/
+	padding:4px;
+	text-align:center;
+	text-overflow:ellipsis;
+	font-size:18px;
+	font-weight:bold;
+	background-color:rgb(245,225,85);
+	
+	/*pointer-events:none;*/
 }
 
 #ticketBody {
-    /*pointer-events:none;*/
+	/*pointer-events:none;*/
 }
 
 #ticketFooter {   
-    text-align:right;
-    text-overflow:ellipsis;
-    font-size:12px;
-    font-weight:bold;
-    /*background-color:gray;*/
+	text-align:right;
+	text-overflow:ellipsis;
+	font-size:12px;
+	font-weight:bold;
+	/*background-color:gray;*/
 }
 
 #ticketDel {
-    display:inline-block;
-    width:20px;
-    height:20px;
-    background-image:url("Bilder/LSymbol.png");
-    background-size:cover;
-    cursor:pointer;
-    /*float:left;
-    position:absolute;*/
-    float:right;
+	display:inline-block;
+	width:20px;
+	height:20px;
+	background-image:url("Bilder/LSymbol.png");
+	background-size:cover;
+	cursor:pointer;
+	/*float:left;
+	position:absolute;*/
+	float:right;
 }
 
 #ticket:hover {
 	animation-name: resize;
-  	/*animation-duration: 1s;*/
-  	animation-duration:0.3s;
-  	/*animation-iteration-count: 4;*/
-  	/*animation-direction: alternate;*/
-  	/*animation-timing-function: ease-in-out;*/
-  	position:center;
-  	transform:scale(1.1,1.1);
+	/*animation-duration: 1s;*/
+	animation-duration:0.3s;
+	/*animation-iteration-count: 4;*/
+	/*animation-direction: alternate;*/
+	/*animation-timing-function: ease-in-out;*/
+	position:center;
+	transform:scale(1.1,1.1);
 }
 
 @keyframes resize {
-  	0% {
-    	padding: 0;
-    	transform:scale(1,1);
-  	}
-  	/*50% {
-      	transform:scale(1.1,1.1);
-    	padding: 20px 0px;
-    	background-color:rgba(255,0,0,0.2);
-  	}*/
-  	100% {
-      	transform:scale(1.1,1.1);
-      	/*padding: 100px 0px;*/
-      	/*background-color:rgba(255,0,0,0.9);*/
-  	}
+	0% {
+		padding: 0;
+		transform:scale(1,1);
+	}
+	/*50% {
+		transform:scale(1.1,1.1);
+		padding: 20px 0px;
+		background-color:rgba(255,0,0,0.2);
+	}*/
+	100% {
+		transform:scale(1.1,1.1);
+		/*padding: 100px 0px;*/
+		/*background-color:rgba(255,0,0,0.9);*/
+	}
 }
 
 section, #addSection {
-    /*verhindert Verschiebung beim ersten Element*/
-    vertical-align:top;
-    top:0px;
-    margin:20px;
-    background-color:rgb(195,195,195);
-    width:448px;
-    height:510px;
-    display:inline-table;
-    border-width:3px;
+	/*verhindert Verschiebung beim ersten Element*/
+	vertical-align:top;
+	top:0px;
+	margin:20px;
+	background-color:rgb(195,195,195);
+	width:448px;
+	height:510px;
+	display:inline-table;
+	border-width:3px;
 	border-style:outset;
 }
 
@@ -122,30 +122,30 @@ h1{
 /* nicht verwendet?
 #ticket-move {
 	width:200px;
-    background-color:white;
-    display:inline-block;
-    margin:6px;
-    border:groove;
-    border-width:2px;
-    border-color:red;
-    position:absolute;
+	background-color:white;
+	display:inline-block;
+	margin:6px;
+	border:groove;
+	border-width:2px;
+	border-color:red;
+	position:absolute;
 } */
 
 button {
-    vertical-align: top;
-    position: relative;
+	vertical-align: top;
+	position: relative;
 }
 
 #crbutton{
-    vertical-align:top;
-    margin-top:0px;
-    margin-left:10px;
-    position:absolute;
+	vertical-align:top;
+	margin-top:0px;
+	margin-left:10px;
+	position:absolute;
 }
 
 #cardbutton {
-    margin-top:0px;
-    margin-right:10px;
-    left:400px;
-    position:absolute;
+	margin-top:0px;
+	margin-right:10px;
+	left:400px;
+	position:absolute;
 }
