@@ -1,4 +1,4 @@
-body {
+﻿body {
 	background-color:rgb(230,230,230);
 }
 
@@ -29,6 +29,9 @@ body {
 	-webkit-box-shadow: 5px 5px 5px grey;
 	box-shadow: 5px 5px 5px grey;
 }
+
+.hueimportant {-webkit-filter: hue-rotate(300deg); filter: hue-rotate(300deg);}
+.hueUNimportant {-webkit-filter: hue-rotate(30deg); filter: hue-rotate(30deg);}
 
 #ticketHead {
 	padding:4px;
@@ -75,6 +78,34 @@ body {
 	position:center;
 	transform:scale(1.1,1.1);
 }
+
+#ticketSel {
+width:200px;
+	height:200px;
+	/*background-color:white;*/
+	background-image:url("Bilder/Notizzettel.png");
+	display:inline-table;
+	margin:10px;
+	/*border:groove;
+	border-width:2px;
+	border-color:black;*/
+	
+	position:page;
+	
+	/*-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;*/
+
+    z-index:2;
+	
+	-moz-box-shadow: 5px 5px 5px grey;
+	-webkit-box-shadow: 5px 5px 5px grey;
+	box-shadow: 5px 5px 5px grey;
+     transform:scale(1.4,1.4);
+}
+
+
 
 @keyframes resize {
 	0% {
