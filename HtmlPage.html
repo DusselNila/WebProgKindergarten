@@ -83,20 +83,32 @@
 
 		function edit(event) {
 		        event.preventDefault();
-		        var _content = event.target.innerHTML;
-		        event.target.contentEditable = 'true';
-		        document.addEventListener('keydown', function (event) {
-		            if (event.keyCode == 13) {
-		                event.target.contentEditable = 'false';
-		                if (event.target.innerHTML == "") {
-		                    event.target.innerHTML = _content;
-		                    alert("Titel darf nicht leer sein!");
-		                }
-		                else {
-		                    updatefuncSec();
-		                }
+		        if (window.navigator.userAgent.indexOf("Firefox") != -1) {
+		            var _content = prompt("Title:", event.target.innerHTML);
+		            if (_content != null && _content != "") {
+		                event.target.innerHTML = _content;
 		            }
-		        });
+		            else {
+		                event.target.innerHTML = event.target.innerHTML;
+		            }
+		            updatefuncSec(event);
+		        }
+		        else {
+		            var _content = event.target.innerHTML;
+		            event.target.contentEditable = 'true';
+		            document.addEventListener('keydown', function (event) {
+		                if (event.keyCode == 13 || event.keyCode == 10) {
+		                    event.target.contentEditable = 'false';
+		                    if (event.target.innerHTML == "") {
+		                        alert("Titel darf nicht leer sein!");
+		                        event.target.innerHTML = _content;
+		                    }
+		                    else {
+		                        updatefuncSec();
+		                    }
+		                }
+		            })
+		        };
 		    }
 
 		function updatefunc() {
