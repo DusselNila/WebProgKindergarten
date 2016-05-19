@@ -83,32 +83,27 @@
 
 		function edit(event) {
 		        event.preventDefault();
-		        if (window.navigator.userAgent.indexOf("Firefox") != -1) {
-		            var _content = prompt("Title:", event.target.innerHTML);
-		            if (_content != null && _content != "") {
-		                event.target.innerHTML = _content;
-		            }
-		            else {
-		                event.target.innerHTML = event.target.innerHTML;
-		            }
-		            updatefuncSec(event);
-		        }
-		        else {
+		       
 		            var _content = event.target.innerHTML;
 		            event.target.contentEditable = 'true';
-		            document.addEventListener('keydown', function (event) {
+		            var tmp;
+		            document.addEventListener('keydown',tmp = function (event) {
 		                if (event.keyCode == 13 || event.keyCode == 10) {
-		                    event.target.contentEditable = 'false';
-		                    if (event.target.innerHTML == "") {
+		                    event.target.contentEditable = false;
+		                    
+		                    if (event.target.textContent.length < 1) {
 		                        alert("Titel darf nicht leer sein!");
+		                        
 		                        event.target.innerHTML = _content;
 		                    }
 		                    else {
+		                        document.removeEventListener('keydown', tmp);
 		                        updatefuncSec();
 		                    }
 		                }
-		            })
-		        };
+		               
+		            });
+		        
 		    }
 
 		function updatefunc() {
@@ -204,6 +199,15 @@
 			var HdrTxt = document.createElement("div");
 			HdrTxt.id = "HdrTxt";
 			HdrTxt.innerHTML = headContent;
+
+			if (headContent.indexOf('!') != -1) {
+
+			     tickets[j].className = "hueimportant";
+			} else if (headContent.indexOf('?') != -1) {
+			   tickets[j].className = "hueUNimportant";
+			}
+
+			updatefunc();
 			ticketHead.appendChild(HdrTxt);
 			var ticketDel = document.createElement("div");
 			ticketDel.id = "ticketDel";
@@ -228,14 +232,35 @@
 			var hover =  false;
 			tickets[j].draggable = true;
 			tickets[j].oncontextmenu = function (e) {
-				if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+			    if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+
+
 					var promptCmd = prompt("Content:", e.target.innerHTML);
 					if (promptCmd == null) {
 						e.target.innerHTML = e.target.innerHTML;
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
-				}
+
+					if (e.target.id === "HdrTxt") {
+					    if (e.target.innerHTML.indexOf('!') != -1) {
+					        var ele = e.target;
+					        while (ele.id != "ticket") {
+					            ele = ele.parentElement;
+					        }
+					        ele.className = "hueimportant";
+					    } else if (e.target.innerHTML.indexOf('?') != -1) {
+					        var ele = e.target;
+					        while (ele.id != "ticket") {
+					            ele = ele.parentElement;
+					        }
+					        ele.className = "hueUNimportant";
+					    }
+					}
+					updatefunc();
+			    }
+
+
 				return false;//disable default menu
 				//BodyTxt = prompt("Content:", "...");
 			};
@@ -318,6 +343,13 @@
 			tickets[i] = document.createElement("div");
 			tickets[i].ondragstart = function (event) { dragStart(event); };
 			tickets[i].id = "ticket";
+            //Wichtigkeit spielerei
+			if (currentTicket.Title.indexOf('!') != -1) {
+			    tickets[i].className = "hueimportant";
+			} else if (currentTicket.Title.indexOf('?') != -1) {
+			   tickets[i].className = "hueUNimportant";
+			}
+
 			var ticketHead = document.createElement("div");
 			ticketHead.id = "ticketHead";
 			//TODO Ticket ändern
@@ -356,7 +388,24 @@
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
+					if (e.target.id === "HdrTxt") {
+					    if (e.target.innerHTML.indexOf('!') != -1) {
+					        var ele = e.target;
+					        while (ele.id != "ticket") {
+					            ele = ele.parentElement;
+					        }
+					        ele.className = "hueimportant";
+					    } else if (e.target.innerHTML.indexOf('?') != -1) {
+					        var ele = e.target;
+					        while (ele.id != "ticket") {
+					            ele = ele.parentElement;
+					        }
+					        ele.className = "hueUNimportant";
+					    }
+					}
+					updatefunc();
 				}
+
 				return false;//disable default menu
 				//BodyTxt = prompt("Content:", "...");
 			};
