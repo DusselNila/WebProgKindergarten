@@ -1,4 +1,4 @@
-﻿body {
+body {
 	background-color:rgb(230,230,230);
 }
 
@@ -30,8 +30,15 @@
 	box-shadow: 5px 5px 5px grey;
 }
 
-.hueimportant {-webkit-filter: hue-rotate(300deg); filter: hue-rotate(300deg);}
-.hueUNimportant {-webkit-filter: hue-rotate(30deg); filter: hue-rotate(30deg);}
+.hueimportant {
+	-webkit-filter: hue-rotate(300deg);
+	filter: hue-rotate(300deg);
+}
+
+.hueUNimportant {
+	-webkit-filter: hue-rotate(30deg);
+	filter: hue-rotate(30deg);
+}
 
 #ticketHead {
 	padding:4px;
@@ -148,9 +155,9 @@ section, #addSection {
 
 #sectionDel {
 	display:inline-block;
-	width:30px;
-	height:30px;
-	background-image:url("Bilder/LSymbol.png");
+	width:35px;
+	height:35px;
+	background-image:url("Bilder/LSymbolSection.png");
 	background-size:cover;
 	cursor:pointer;
 	float:right;
@@ -158,7 +165,9 @@ section, #addSection {
 
 h1{
 	margin-left:20px;
+	margin-top:8px;
 	display:inline-block;
+	font-size:30px;
 }
 
 /* nicht verwendet?
