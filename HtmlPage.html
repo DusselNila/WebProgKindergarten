@@ -37,7 +37,7 @@
 					var sectionHead = document.createElement("div");
 					sectionHead.id = "sectionHead";
 					var title = document.createElement("h1");
-					title.oncontextmenu = function (event) { edit(event) };
+					title.ondblclick = function (event) { edit(event) };
 					title.innerHTML = _content;
 					var sectionDel = document.createElement("div");
 					sectionDel.id = "sectionDel";
@@ -77,16 +77,22 @@
 		}
 		
 		function edit(event) {
-			event.preventDefault();
-			var _content = prompt("Title:", event.target.innerHTML);
-			if (_content != null && _content != "") {
-				event.target.innerHTML = _content;
-			}
-			else {
-				event.target.innerHTML = event.target.innerHTML;
-			}
-			updatefuncSec();
-		}
+		        event.preventDefault();
+		        var _content = event.target.innerHTML;
+		        event.target.contentEditable = 'true';
+		        document.addEventListener('keydown', function (event) {
+		            if (event.keyCode == 13) {
+		                event.target.contentEditable = 'false';
+		                if (event.target.innerHTML == "") {
+		                    event.target.innerHTML = _content;
+		                    alert("Titel darf nicht leer sein!");
+		                }
+		                else {
+		                    updatefuncSec();
+		                }
+		            }
+		        });
+		    }
 		
 		function updatefunc() {
 			var sections = document.getElementsByTagName("SECTION");
@@ -266,7 +272,7 @@
 			section[i].ondrop = function (event) { drop(event) };
 			section[i].ondragover = function (event) { allowDrop(event) };
 			section[i].id = "section";
-			title.oncontextmenu = function (event) { edit(event) };
+			title.ondblclick = function (event) { edit(event) };
 			//TODO Delete-Button	
 			var sectionHead = document.createElement("div");
 			sectionHead.id = "sectionHead";
