@@ -27,22 +27,24 @@
 				if (_content === "") {
 					alert("Please enter Title!");
 				}
-				else if(_content!=null)
-				{
+				else if(_content!=null) {
 					entered = true;
 					section[i] = document.createElement("section");
 					section[i].ondrop = function (event) { drop(event) };
 					section[i].ondragover = function (event) { allowDrop(event) };
 					section[i].id = "section"
+					//TODO Delete-Button
+					var sectionHead = document.createElement("div");
+					sectionHead.id = "sectionHead";
 					var title = document.createElement("h1");
 					title.oncontextmenu = function (event) { edit(event) };
 					title.innerHTML = _content;
-					var delbutton = document.createElement("button");
-					delbutton.onclick = function (event) { deleteTable(event) };
-					delbutton.type = "button";
-					delbutton.innerHTML = "delete Table";
-					section[i].appendChild(title);
-					section[i].appendChild(delbutton);
+					var sectionDel = document.createElement("div");
+					sectionDel.id = "sectionDel";
+					sectionDel.onclick = function (event) {deleteTable(event) };
+					sectionHead.appendChild(title);
+					sectionHead.appendChild(sectionDel);
+					section[i].appendChild(sectionHead);
 					var element = document.getElementById("body")
 					element.appendChild(section[i]);
 				}
@@ -56,7 +58,7 @@
 		
 		function deleteTable(event)
 		{
-			var parent = event.target.parentElement;
+			var parent = event.target.parentElement.parentElement;
 			var childs = parent.children;
 			var empty = true;
 			for (var i = 0; i < childs.length; i++) {
@@ -65,7 +67,7 @@
 				}
 			}
 			if (empty === true) {
-				var element = event.target.parentElement;
+				var element = event.target.parentElement.parentElement;
 				element.parentNode.removeChild(element);
 				updatefuncSec(event);
 			}
@@ -168,7 +170,7 @@
 				else if (footContent == null)
 					return false;
 				else
-				entered = true;
+					entered = true;
 			}
 			tickets[j] = document.createElement("div");
 			tickets[j].ondragstart = function (event) { dragStart(event); };
@@ -265,12 +267,15 @@
 			section[i].ondragover = function (event) { allowDrop(event) };
 			section[i].id = "section";
 			title.oncontextmenu = function (event) { edit(event) };
-			var delbutton = document.createElement("button");
-			delbutton.onclick = function (event) { deleteTable(event) };
-			delbutton.type = "button";
-			delbutton.innerHTML = "delete Table";
-			section[i].appendChild(title);
-			section[i].appendChild(delbutton);
+			//TODO Delete-Button	
+			var sectionHead = document.createElement("div");
+			sectionHead.id = "sectionHead";
+			var sectionDel = document.createElement("div");
+			sectionDel.id = "sectionDel";
+			sectionDel.onclick = function (event) {deleteTable(event) };
+			sectionHead.appendChild(title);
+			sectionHead.appendChild(sectionDel);
+			section[i].appendChild(sectionHead);
 			var element = document.getElementById("body");
 			element.appendChild(section[i]);
 		}
@@ -292,6 +297,7 @@
 			tickets[i].id = "ticket";
 			var ticketHead = document.createElement("div");
 			ticketHead.id = "ticketHead";
+			//TODO Ticket ändern
 			var HdrTxt = document.createElement("div");
 			HdrTxt.id = "HdrTxt";
 			HdrTxt.innerHTML = currentTicket.Title;
