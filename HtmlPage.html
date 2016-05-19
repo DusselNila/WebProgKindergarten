@@ -33,7 +33,25 @@
                 glblSelTkt.draggable = true;
                 glblSelTkt.contentEditable = false;
                 glblSelTkt = null;
+
+            } 
+
+        };
+        var glblKeyUpFunc = function (event) {
+            if (glblSelTkt != null) {
+
+                var hdr = glblSelTkt.children[0].children[0];
+                // alert(hdr.innerHTML);
+                if (hdr.innerHTML.indexOf('!') != -1) {
+                    glblSelTkt.className = "hueimportant";
+                } else if (hdr.innerHTML.indexOf('?') != -1) {
+                    glblSelTkt.className = "hueUNimportant";
+                } else {
+                    glblSelTkt.className = null;
+                }
             }
+
+
 
         };
         function clickaction(event) {
@@ -64,6 +82,8 @@
                 tmpTicket.contentEditable = true;
                 document.removeEventListener('keydown', glblKeyDownFunc);
                 document.addEventListener('keydown', glblKeyDownFunc);
+                document.removeEventListener('keyup', glblKeyUpFunc);
+                document.addEventListener('keyup', glblKeyUpFunc);
             }
 
 
