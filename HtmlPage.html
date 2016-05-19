@@ -1,20 +1,20 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<title>Projektverwaltung</title>
-	<meta charset="utf-8" />
-	<link rel="stylesheet" href="StyleSheet.css">
+    <title>Projektverwaltung</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="StyleSheet.css">
 </head>
 <body id="body">
-	
-	<!-- alternative geschaffen
-	<button id="crbutton" type="button" onclick="createTable()">create new table</button>
-	-->
-	
-	<button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
-	
-	
-	<script>
+
+    <!-- alternative geschaffen
+    <button id="crbutton" type="button" onclick="createTable()">create new table</button>
+    -->
+
+    <button id="cardbutton" type="button" onclick="createTicket()">create new ticket</button>
+
+
+    <script>
 		var section = [];
 		var tickets = [];
 		function createTable()
@@ -54,8 +54,13 @@
 			}
 			i++;
 			updatefuncSec();
+
+			var erstellungsDingens = document.getElementById("addSection");
+			var tmpParent = erstellungsDingens.parentElement;
+			tmpParent.removeChild(erstellungsDingens);
+			tmpParent.appendChild(erstellungsDingens);
 		}
-		
+
 		function deleteTable(event)
 		{
 			var parent = event.target.parentElement.parentElement;
@@ -75,7 +80,7 @@
 				alert("Can't be deleted due to tickets");
 			}
 		}
-		
+
 		function edit(event) {
 		        event.preventDefault();
 		        var _content = event.target.innerHTML;
@@ -93,7 +98,7 @@
 		            }
 		        });
 		    }
-		
+
 		function updatefunc() {
 			var sections = document.getElementsByTagName("SECTION");
 			var saveTickets = [];
@@ -126,7 +131,7 @@
 			localStorage.setItem("TicketData", JSON.stringify(saveTickets));
 			var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
 		}
-		
+
 		function updatefuncSec() {
 			var saveSections = [];
 			var counter = 0;
@@ -142,7 +147,7 @@
 			localStorage.setItem("SectionData", JSON.stringify(saveSections));
 			var saveSections = JSON.parse(localStorage.getItem("SectionData"));
 		}
-		
+
 		function createTicket() {
 			var j = 0;
 			var entered = false;
@@ -224,11 +229,11 @@
 			};
 			j++;
 		}
-		
+
 		function allowDrop(event) {
 			event.preventDefault();
 		}
-		
+
 		function drop(event) {
 			event.preventDefault();
 			//event.target.appendChild(event.dataTransfer.getData(data));
@@ -240,13 +245,13 @@
 			sectEle.appendChild(draggedEle);
 			updatefunc();
 		}
-		
+
 		var draggedEle;
 		function dragStart(event) {
 			draggedEle = event.target;
 			event.dataTransfer.setData("TransferNode", event.target.id);// FireFox will das ne zeile mit datatransfer vorhanden ist, damits funktioniert, wird aber nicht genutzt...
 		}
-		
+
 		//Aufbau der Sections aus Local Storage
 		var _Section = { header: "New Table", SecID: 0};
 		var saveSections = JSON.parse(localStorage.getItem("SectionData"));
@@ -273,7 +278,7 @@
 			section[i].ondragover = function (event) { allowDrop(event) };
 			section[i].id = "section";
 			title.ondblclick = function (event) { edit(event) };
-			//TODO Delete-Button	
+			//TODO Delete-Button
 			var sectionHead = document.createElement("div");
 			sectionHead.id = "sectionHead";
 			var sectionDel = document.createElement("div");
@@ -285,7 +290,7 @@
 			var element = document.getElementById("body");
 			element.appendChild(section[i]);
 		}
-		
+
 		//Aufbau der Tickets aus dem Local Storage
 		var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0 };
 		var tickets = [];
@@ -326,10 +331,10 @@
 			tickets[i].appendChild(ticketHead);
 			tickets[i].appendChild(ticketBody);
 			tickets[i].appendChild(ticketFooter);
-			
+
 			var sections = document.getElementsByTagName("SECTION");
 			sections[currentTicket.SectionID].appendChild(tickets[i]);
-			
+
 			tickets[i].draggable = true;
 			tickets[i].oncontextmenu = function (e) {
 				if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
@@ -342,12 +347,12 @@
 				}
 				return false;//disable default menu
 				//BodyTxt = prompt("Content:", "...");
-			};  
+			};
 		}
-	</script>
-	
-	<div id="addSection" onclick="createTable()">
-		<h1>Neuen Bereich erstellen</h1>
-	</div>
+    </script>
+
+    <div id="addSection" onclick="createTable()">
+        <h1>Neuen Bereich erstellen</h1>
+    </div>
 </body>
 </html>
