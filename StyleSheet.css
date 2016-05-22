@@ -53,10 +53,12 @@ body {
 
 #ticketBody {
 	/*pointer-events:none;*/
+	height:150px;
 }
 
 #ticketFooter {   
-	text-align:right;
+	padding-left:8px;
+	text-align:left;
 	text-overflow:ellipsis;
 	font-size:12px;
 	font-weight:bold;
@@ -151,6 +153,16 @@ section, #addSection {
 
 #addSection:hover{
 	opacity:1;
+}
+
+#addTicket {
+	display:inline-block;
+	width:35px;
+	height:35px;
+	background-image:url("Bilder/AddTicketSymbol.png");
+	background-size:cover;
+	cursor:pointer;
+	float:right;
 }
 
 #sectionDel {
