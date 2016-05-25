@@ -44,16 +44,21 @@ body {
 	padding:4px;
 	text-align:center;
 	text-overflow:ellipsis;
-	font-size:18px;
+	font-size:20px;
 	font-weight:bold;
 	background-color:rgb(245,225,85);
 	
 	/*pointer-events:none;*/
 }
 
+#iconContainer {
+	display:block;
+	height:15px;
+}
+
 #ticketBody {
 	/*pointer-events:none;*/
-	height:150px;
+	height:135px;
 }
 
 #ticketFooter {   
@@ -67,9 +72,22 @@ body {
 
 #ticketDel {
 	display:inline-block;
-	width:20px;
-	height:20px;
+	width:15px;
+	height:15px;
 	background-image:url("Bilder/LSymbol.png");
+	background-size:cover;
+	cursor:pointer;
+	/*float:left;
+	position:absolute;*/
+	float:right;
+}
+
+#diskussionButton {
+	display:inline-block;
+	width:15px;
+	height:15px;
+	margin-right:5px;
+	background-image:url("Bilder/Sprechblase.png");
 	background-size:cover;
 	cursor:pointer;
 	/*float:left;

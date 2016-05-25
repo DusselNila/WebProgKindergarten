@@ -120,10 +120,10 @@
 			i++;
 			updatefuncSec();
 
-			var erstellungsDingens = document.getElementById("addSection");
-			var tmpParent = erstellungsDingens.parentElement;
-			tmpParent.removeChild(erstellungsDingens);
-			tmpParent.appendChild(erstellungsDingens);
+			var erstellungsSection = document.getElementById("addSection");
+			var tmpParent = erstellungsSection.parentElement;
+			tmpParent.removeChild(erstellungsSection);
+			tmpParent.appendChild(erstellungsSection);
 		}
 
 		function deleteTable(event)
@@ -261,6 +261,8 @@
 			var ticketHead = document.createElement("div");
 			ticketHead.id = "ticketHead";
 			//TODO Ticket ändern
+			var iconContainer = document.createElement("div");
+			iconContainer.id = "iconContainer";
 			var HdrTxt = document.createElement("div");
 			HdrTxt.id = "HdrTxt";
 			HdrTxt.innerHTML = headContent;
@@ -272,14 +274,19 @@
 			}
 
 			updatefunc();
+			ticketHead.appendChild(iconContainer);
 			ticketHead.appendChild(HdrTxt);
 			var ticketDel = document.createElement("div");
 			ticketDel.id = "ticketDel";
 			ticketDel.onclick = function (e) {
-				e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+				e.target.parentElement.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement.parentElement);
 				updatefunc();
 			};
-			ticketHead.appendChild(ticketDel);
+			iconContainer.appendChild(ticketDel);
+			var diskussionButton = document.createElement("div");
+			diskussionButton.id = "diskussionButton";
+			//diskussionButton.onclick = Hannahs Diskussion
+			iconContainer.appendChild(diskussionButton);
 			var BodyTxt = document.createTextNode(bodyContent);
 			var ticketBody = document.createElement("div");
 			ticketBody.id = "ticketBody";
@@ -420,17 +427,24 @@
 			var ticketHead = document.createElement("div");
 			ticketHead.id = "ticketHead";
 			//TODO Ticket ändern
+			var iconContainer = document.createElement("div");
+			iconContainer.id = "iconContainer";
 			var HdrTxt = document.createElement("div");
 			HdrTxt.id = "HdrTxt";
 			HdrTxt.innerHTML = currentTicket.Title;
+			ticketHead.appendChild(iconContainer);
 			ticketHead.appendChild(HdrTxt);
 			var ticketDel = document.createElement("div");
 			ticketDel.id = "ticketDel";
 			ticketDel.onclick = function (e) {
-				e.target.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement);
+				e.target.parentElement.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement.parentElement);
 				updatefunc();
 			};
-			ticketHead.appendChild(ticketDel);
+			iconContainer.appendChild(ticketDel);
+			var diskussionButton = document.createElement("div");
+			diskussionButton.id = "diskussionButton";
+			//diskussionButton.onclick = Hannahs Diskussion
+			iconContainer.appendChild(diskussionButton);
 			var BodyTxt = document.createTextNode(currentTicket.Body);
 			var ticketBody = document.createElement("div");
 			ticketBody.appendChild(BodyTxt);
