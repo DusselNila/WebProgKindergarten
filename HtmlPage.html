@@ -7,7 +7,36 @@
 </head>
 <body id="body" onmouseup="clickaction(event)">
 
+	<div class="popUpHintergrund" id="ticketErstellenPopUp">
+		<div class="popUpAusgrauen"></div>
+		<div id="ticketErstellenContent">
+			<form id="ticketErstellenForm">
+				<input id="titelEingabe" type="text" name="ticketTitel" maxlength="18" placeholder="Titel" required><br>
+				<textarea id="inhaltEingabe" name="ticketInhalt" rows="6" cols="45" maxlength="150" placeholder="Inhalt" required>Hier den Inhalt eingeben.</textarea><br>
+				<input id="bearbeiterEingabe" type="text" name="ticketBearbeiter" maxlength="28" placeholder="Bearbeiter">
+			</form>
+			<div id="abbrechenButton" onclick="closeTicketForm()"></div>
+			<input id="okButton" onclick="createTicket()" type="submit" name="okButton" value="OK">
+		</div>
+	</div>
+
     <script>
+		var openTicketForm = function(event) {
+			var ticketErstellenPopUp = document.getElementById("ticketErstellenPopUp");
+			ticketErstellenPopUp.style.display="block";
+			//Form leeren
+			document.getElementById("titelEingabe").value="";
+			document.getElementById("inhaltEingabe").value="";
+			document.getElementById("bearbeiterEingabe").value="";
+			var currentSection = event.target.parentElement.parentElement;
+			localStorage.setItem("currentSectionId",JSON.stringify(currentSection.id));
+		}
+		
+		var closeTicketForm = function() {
+			var ticketErstellenPopUp = document.getElementById("ticketErstellenPopUp");
+			ticketErstellenPopUp.style.display="none";
+		}
+	
         var glblSelTkt;
         var glblKeyDownFunc = function (event) {
             if (event.keyCode == 13 || event.keyCode == 10) {
@@ -21,7 +50,7 @@
                     document.removeEventListener('keydown', this);
                     updatefunc();
                 }
-                glblSelTkt.id = "ticket";
+                glblSelTkt.className = "ticket";
                 glblSelTkt.draggable = true;
                 glblSelTkt.contentEditable = false;
                 glblSelTkt = null;
@@ -35,13 +64,14 @@
 
                 var hdr = glblSelTkt.children[0].children[0];
                 // alert(hdr.innerHTML);
+				/*
                 if (hdr.innerHTML.indexOf('!') != -1) {
-                    glblSelTkt.className = "hueimportant";
+                    glblSelTkt.className = "ticket hueimportant";
                 } else if (hdr.innerHTML.indexOf('?') != -1) {
-                    glblSelTkt.className = "hueUNimportant";
+                    glblSelTkt.className = "ticket hueUNimportant";
                 } else {
-                    glblSelTkt.className = null;
-                }
+                    glblSelTkt.className = "ticket";
+                }*/
             }
         };
         
@@ -49,25 +79,25 @@
             var clickedEle = document.elementFromPoint(event.clientX, event.clientY);
 
             var tmpTicket = clickedEle;
-            if (clickedEle.id === "HdrTxt" || clickedEle.id === "ticketBody" || clickedEle.id === "ticketFooter") {
+            if (clickedEle.className === "HdrTxt" || clickedEle.className === "ticketBody" || clickedEle.className === "ticketFooter") {
                 tmpTicket = clickedEle.parentElement;
-                while (tmpTicket.id != "ticket" && tmpTicket.id != "ticketSel") {
+                while (tmpTicket.className != "ticket" && tmpTicket.className != "ticketSel") {
                     tmpTicket = tmpTicket.parentElement;
                 }
             }
 
-            if (tmpTicket.id != "ticketSel" && glblSelTkt != null) {
+            if (tmpTicket.className != "ticketSel" && glblSelTkt != null) {
                 //alte Selektion zurücksetzen
-                glblSelTkt.id = "ticket";
+                glblSelTkt.className = "ticket";
                 glblSelTkt.draggable = true;
                 glblSelTkt.contentEditable = false;
                 glblSelTkt = null;
             }
 
-            if (tmpTicket.id === "ticket") {
+            if (tmpTicket.className === "ticket") {
                 //neue Selektion zum editieren vorbereiten
                 glblSelTkt = tmpTicket;
-                tmpTicket.id = "ticketSel";
+                tmpTicket.className = "ticketSel";
                 tmpTicket.draggable = false;
                 tmpTicket.contentEditable = true;
                 document.removeEventListener('keydown', glblKeyDownFunc);
@@ -94,17 +124,18 @@
 					section[i] = document.createElement("section");
 					section[i].ondrop = function (event) { drop(event) };
 					section[i].ondragover = function (event) { allowDrop(event) };
-					section[i].id = "section"
+					section[i].className = "section";
+					section[i].id = "section" + i;
 					var sectionHead = document.createElement("div");
-					sectionHead.id = "sectionHead";
+					sectionHead.className = "sectionHead";
 					var title = document.createElement("h1");
 					title.ondblclick = function (event) { edit(event) };
 					title.innerHTML = _content;
 					var addTicket = document.createElement("div");
-					addTicket.id = "addTicket";
-					addTicket.onclick = function (event) {createTicket(event)};
+					addTicket.className = "addTicket";
+					addTicket.onclick = function (event) {openTicketForm(event)};
 					var sectionDel = document.createElement("div");
-					sectionDel.id = "sectionDel";
+					sectionDel.className = "sectionDel";
 					sectionDel.onclick = function (event) {deleteTable(event) };
 					sectionHead.appendChild(title);
 					sectionHead.appendChild(sectionDel);
@@ -132,7 +163,7 @@
 			var childs = parent.children;
 			var empty = true;
 			for (var i = 0; i < childs.length; i++) {
-				if (childs[i].id === "ticket") {
+				if (childs[i].className === "ticket") {
 					empty = false;
 				}
 			}
@@ -175,19 +206,19 @@
 			for (var i = 0; i < sections.length; i++) {
 				var sectTickets = sections[i].children;
 				for (var cn = 0; cn < sectTickets.length; cn++) {
-				    if (sectTickets[cn].id === "ticket" || sectTickets[cn].id === "ticketSel") {
+				    if (sectTickets[cn].className === "ticket" || sectTickets[cn].className === "ticketSel") {
 						saveTickets[counter] = Object.create(ticket);
 						var children = sectTickets[cn].getElementsByTagName("div");
 						for (var j = 0; j < children.length; j++) {
-							if (children[j].getAttribute('id') == 'HdrTxt') // any attribute could be used here
+							if (children[j].getAttribute('class') == 'HdrTxt') // any attribute could be used here
 							{
 								saveTickets[counter].Title = children[j].innerHTML;
 							} else
-								if (children[j].getAttribute('id') == 'ticketBody') // any attribute could be used here
+								if (children[j].getAttribute('class') == 'ticketBody') // any attribute could be used here
 								{
 									saveTickets[counter].Body = children[j].innerHTML;
 								} else
-									if (children[j].getAttribute('id') == 'ticketFooter') // any attribute could be used here
+									if (children[j].getAttribute('class') == 'ticketFooter') // any attribute could be used here
 									{
 										saveTickets[counter].Author = children[j].innerHTML;
 									}
@@ -206,7 +237,7 @@
 			var counter = 0;
 			var bodychilds = document.body.children;
 			for (var i = 0; i < bodychilds.length; i++) {
-				if (bodychilds[i].id === "section") {
+				if (bodychilds[i].className === "section") {
 					saveSections[counter] = Object.create(_Section);
 					var childs = bodychilds[i].getElementsByTagName("h1");
 					saveSections[counter].header = childs[0].innerHTML;
@@ -219,7 +250,7 @@
 
 		function createTicket(event) {
 			var j = 0;
-			var entered = false;
+			/*var entered = false;
 			//Inhalt abfragen
 			while (!entered) {
 				var headContent = prompt("Titel des Tickets:", "Neues Ticket");
@@ -252,59 +283,64 @@
 					return false;
 				else
 					entered = true;
-			}
+			}*/
+			
+			var headContent = document.getElementById("titelEingabe").value;
+			var bodyContent = document.getElementById("inhaltEingabe").value;
+			var footContent = document.getElementById("bearbeiterEingabe").value;
 			
 			//Ticket erstellen
 			tickets[j] = document.createElement("div");
 			tickets[j].ondragstart = function (event) { dragStart(event); };
-			tickets[j].id = "ticket";
+			tickets[j].className = "ticket";
+			tickets[j].id = "ticket" + j;
 			var ticketHead = document.createElement("div");
-			ticketHead.id = "ticketHead";
-			//TODO Ticket ändern
+			ticketHead.className = "ticketHead";
 			var iconContainer = document.createElement("div");
-			iconContainer.id = "iconContainer";
+			iconContainer.className = "iconContainer";
 			var HdrTxt = document.createElement("div");
-			HdrTxt.id = "HdrTxt";
+			HdrTxt.className = "HdrTxt";
 			HdrTxt.innerHTML = headContent;
-
+			/*
 			if (headContent.indexOf('!') != -1) {
-			     tickets[j].className = "hueimportant";
+			     tickets[j].className = "ticket hueimportant";
 			} else if (headContent.indexOf('?') != -1) {
-			   tickets[j].className = "hueUNimportant";
-			}
-
+			   tickets[j].className = "ticket hueUNimportant";
+			}*/
 			updatefunc();
 			ticketHead.appendChild(iconContainer);
 			ticketHead.appendChild(HdrTxt);
 			var ticketDel = document.createElement("div");
-			ticketDel.id = "ticketDel";
+			ticketDel.className = "ticketDel";
 			ticketDel.onclick = function (e) {
 				e.target.parentElement.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement.parentElement);
 				updatefunc();
 			};
 			iconContainer.appendChild(ticketDel);
 			var diskussionButton = document.createElement("div");
-			diskussionButton.id = "diskussionButton";
+			diskussionButton.className = "diskussionButton";
 			//diskussionButton.onclick = Hannahs Diskussion
 			iconContainer.appendChild(diskussionButton);
 			var BodyTxt = document.createTextNode(bodyContent);
 			var ticketBody = document.createElement("div");
-			ticketBody.id = "ticketBody";
+			ticketBody.className = "ticketBody";
 			ticketBody.appendChild(BodyTxt);
 			var FtrTxt = document.createTextNode(footContent);
 			var ticketFooter = document.createElement("div");
-			ticketFooter.id = "ticketFooter";
+			ticketFooter.className = "ticketFooter";
 			ticketFooter.appendChild(FtrTxt);
 			tickets[j].appendChild(ticketHead);
 			tickets[j].appendChild(ticketBody);
 			tickets[j].appendChild(ticketFooter);
-			var section = event.target.parentElement.parentElement;
+			//TODO erstellen
+			var tempSectionId = JSON.parse(localStorage.getItem("currentSectionId"));
+			var section = document.getElementById(tempSectionId);
 			section.appendChild(tickets[j]);
 			var hover =  false;
 			tickets[j].draggable = true;
 			//Ändern bei Rechtsklick hinzufügen
 			tickets[j].oncontextmenu = function (e) {
-			    if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+			    if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
 
 
 					var promptCmd = prompt("Content:", e.target.innerHTML);
@@ -313,22 +349,22 @@
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
-
-					if (e.target.id === "HdrTxt") {
+					/*
+					if (e.target.className === "HdrTxt") {
 					    if (e.target.innerHTML.indexOf('!') != -1) {
 					        var ele = e.target;
-					        while (ele.id != "ticket") {
+					        while (ele.className != "ticket") {
 					            ele = ele.parentElement;
 					        }
-					        ele.className = "hueimportant";
+					        ele.className = "ticket hueimportant";
 					    } else if (e.target.innerHTML.indexOf('?') != -1) {
 					        var ele = e.target;
-					        while (ele.id != "ticket") {
+					        while (ele.className != "ticket") {
 					            ele = ele.parentElement;
 					        }
-					        ele.className = "hueUNimportant";
+					        ele.className = "ticket hueUNimportant";
 					    }
-					}
+					}*/
 					updatefunc();
 			    }
 				return false;//disable default menu
@@ -336,6 +372,7 @@
 			};
 			j++;
 			updatefunc();
+			closeTicketForm();
 		}
 
 		function allowDrop(event) {
@@ -384,15 +421,16 @@
 			section[i] = document.createElement("section");
 			section[i].ondrop = function (event) { drop(event) };
 			section[i].ondragover = function (event) { allowDrop(event) };
-			section[i].id = "section";
+			section[i].className = "section";
+			section[i].id = "section" + i;
 			title.ondblclick = function (event) { edit(event) };
 			var sectionHead = document.createElement("div");
-			sectionHead.id = "sectionHead";
+			sectionHead.className = "sectionHead";
 			var addTicket = document.createElement("div");
-			addTicket.id = "addTicket";
-			addTicket.onclick = function (event) {createTicket(event)};
+			addTicket.className = "addTicket";
+			addTicket.onclick = function (event) {openTicketForm(event)};
 			var sectionDel = document.createElement("div");
-			sectionDel.id = "sectionDel";
+			sectionDel.className = "sectionDel";
 			sectionDel.onclick = function (event) {deleteTable(event) };
 			sectionHead.appendChild(title);
 			sectionHead.appendChild(sectionDel);
@@ -416,41 +454,42 @@
 			currentTicket.ID = i;
 			tickets[i] = document.createElement("div");
 			tickets[i].ondragstart = function (event) { dragStart(event); };
-			tickets[i].id = "ticket";
+			tickets[i].className = "ticket";
+			tickets[i].id = "ticket" + i;
             //Wichtigkeit spielerei
+			/*
 			if (currentTicket.Title.indexOf('!') != -1) {
-			    tickets[i].className = "hueimportant";
+			    tickets[i].className = "ticket hueimportant";
 			} else if (currentTicket.Title.indexOf('?') != -1) {
-			   tickets[i].className = "hueUNimportant";
-			}
+			   tickets[i].className = "ticket hueUNimportant";
+			}*/
 
 			var ticketHead = document.createElement("div");
-			ticketHead.id = "ticketHead";
-			//TODO Ticket ändern
+			ticketHead.className = "ticketHead";
 			var iconContainer = document.createElement("div");
-			iconContainer.id = "iconContainer";
+			iconContainer.className = "iconContainer";
 			var HdrTxt = document.createElement("div");
-			HdrTxt.id = "HdrTxt";
+			HdrTxt.className = "HdrTxt";
 			HdrTxt.innerHTML = currentTicket.Title;
 			ticketHead.appendChild(iconContainer);
 			ticketHead.appendChild(HdrTxt);
 			var ticketDel = document.createElement("div");
-			ticketDel.id = "ticketDel";
+			ticketDel.className = "ticketDel";
 			ticketDel.onclick = function (e) {
 				e.target.parentElement.parentElement.parentElement.parentElement.removeChild(e.target.parentElement.parentElement.parentElement);
 				updatefunc();
 			};
 			iconContainer.appendChild(ticketDel);
 			var diskussionButton = document.createElement("div");
-			diskussionButton.id = "diskussionButton";
+			diskussionButton.className = "diskussionButton";
 			//diskussionButton.onclick = Hannahs Diskussion
 			iconContainer.appendChild(diskussionButton);
 			var BodyTxt = document.createTextNode(currentTicket.Body);
 			var ticketBody = document.createElement("div");
 			ticketBody.appendChild(BodyTxt);
-			ticketBody.id = "ticketBody";
+			ticketBody.className = "ticketBody";
 			var ticketFooter = document.createElement("div");
-			ticketFooter.id = "ticketFooter";
+			ticketFooter.className = "ticketFooter";
 			var FtrTxt = document.createTextNode(currentTicket.Author);
 			ticketFooter.appendChild(FtrTxt);
 			tickets[i].appendChild(ticketHead);
@@ -463,28 +502,29 @@
 			tickets[i].draggable = true;
 			//Ändern bei Rechtsklick hinzufügen
 			tickets[i].oncontextmenu = function (e) {
-				if (e.target.id === "ticketBody" || e.target.id === "ticketFooter" || e.target.id === "HdrTxt") {
+				if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
 					var promptCmd = prompt("Content:", e.target.innerHTML);
 					if (promptCmd == null) {
 						e.target.innerHTML = e.target.innerHTML;
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
-					if (e.target.id === "HdrTxt") {
+					/*
+					if (e.target.className === "HdrTxt") {
 					    if (e.target.innerHTML.indexOf('!') != -1) {
 					        var ele = e.target;
-					        while (ele.id != "ticket") {
+					        while (ele.className != "ticket") {
 					            ele = ele.parentElement;
 					        }
-					        ele.className = "hueimportant";
+					        ele.className = "ticket hueimportant";
 					    } else if (e.target.innerHTML.indexOf('?') != -1) {
 					        var ele = e.target;
-					        while (ele.id != "ticket" && ele.id != "ticketSel") {
+					        while (ele.className != "ticket" && ele.className != "ticketSel") {
 					            ele = ele.parentElement;
 					        }
-					        ele.className = "hueUNimportant";
+					        ele.className = "ticket hueUNimportant";
 					    }
-					}
+					}*/
 					updatefunc();
 				}
 
@@ -492,6 +532,10 @@
 				//BodyTxt = prompt("Content:", "...");
 			};
 		}
+		
+		//localStorage direkt erstellen
+		updatefunc();
+		updatefuncSec();
     </script>
 
     <div id="addSection" onclick="createTable()">

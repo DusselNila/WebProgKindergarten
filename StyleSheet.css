@@ -2,16 +2,17 @@ body {
 	background-color:rgb(230,230,230);
 }
 
-#HdrTxt {
+.HdrTxt {
 	display:inline;
 	width:85%;
 }
 
-#ticket {
+.ticket {
 	width:200px;
 	height:200px;
 	/*background-color:white;*/
 	background-image:url("Bilder/Notizzettel.png");
+	background-size:cover;
 	display:inline-table;
 	margin:10px;
 	/*border:groove;
@@ -40,7 +41,7 @@ body {
 	filter: hue-rotate(30deg);
 }
 
-#ticketHead {
+.ticketHead {
 	padding:4px;
 	text-align:center;
 	text-overflow:ellipsis;
@@ -51,17 +52,17 @@ body {
 	/*pointer-events:none;*/
 }
 
-#iconContainer {
+.iconContainer {
 	display:block;
 	height:15px;
 }
 
-#ticketBody {
+.ticketBody {
 	/*pointer-events:none;*/
 	height:135px;
 }
 
-#ticketFooter {   
+.ticketFooter {   
 	padding-left:8px;
 	text-align:left;
 	text-overflow:ellipsis;
@@ -70,19 +71,17 @@ body {
 	/*background-color:gray;*/
 }
 
-#ticketDel {
+.ticketDel {
 	display:inline-block;
 	width:15px;
 	height:15px;
 	background-image:url("Bilder/LSymbol.png");
 	background-size:cover;
 	cursor:pointer;
-	/*float:left;
-	position:absolute;*/
 	float:right;
 }
 
-#diskussionButton {
+.diskussionButton {
 	display:inline-block;
 	width:15px;
 	height:15px;
@@ -90,12 +89,10 @@ body {
 	background-image:url("Bilder/Sprechblase.png");
 	background-size:cover;
 	cursor:pointer;
-	/*float:left;
-	position:absolute;*/
 	float:right;
 }
 
-#ticket:hover {
+.ticket:hover {
 	animation-name: resize;
 	/*animation-duration: 1s;*/
 	animation-duration:0.3s;
@@ -106,8 +103,8 @@ body {
 	transform:scale(1.1,1.1);
 }
 
-#ticketSel {
-width:200px;
+.ticketSel {
+	width:200px;
 	height:200px;
 	/*background-color:white;*/
 	background-image:url("Bilder/Notizzettel.png");
@@ -132,8 +129,6 @@ width:200px;
      transform:scale(1.4,1.4);
 }
 
-
-
 @keyframes resize {
 	0% {
 		padding: 0;
@@ -151,7 +146,7 @@ width:200px;
 	}
 }
 
-section, #addSection {
+.section, #addSection {
 	/*verhindert Verschiebung beim ersten Element*/
 	vertical-align:top;
 	top:0px;
@@ -173,7 +168,7 @@ section, #addSection {
 	opacity:1;
 }
 
-#addTicket {
+.addTicket {
 	display:inline-block;
 	width:35px;
 	height:35px;
@@ -183,7 +178,7 @@ section, #addSection {
 	float:right;
 }
 
-#sectionDel {
+.sectionDel {
 	display:inline-block;
 	width:35px;
 	height:35px;
@@ -212,21 +207,105 @@ h1{
 	position:absolute;
 } */
 
-button {
-	vertical-align: top;
-	position: relative;
+/*--------------------ausgegrautes Form-Fenster--------------------*/
+.popUpHintergrund {
+	position:fixed;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+	z-index:100;
 }
 
-#crbutton{
-	vertical-align:top;
-	margin-top:0px;
-	margin-left:10px;
-	position:absolute;
+#ticketErstellenPopUp {
+	display:none;
 }
 
-#cardbutton {
-	margin-top:0px;
-	margin-right:10px;
-	left:400px;
+.popUpAusgrauen {
+	position:fixed;
+	width:100%;
+	height:100%;
+	background-color:#000000;
+	opacity:0.5;
+}
+
+#ticketErstellenContent {
+	position:fixed;
+	width:500px;
+	height:450px;
+	background-color:lightgrey;
+	opacity:1;
+	border-style: outset;
+	border-color: black;
+	border-width: 3px;
+	margin: 0;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+#abbrechenButton {
+	display:inline-block;
+	width:35px;
+	height:35px;
+	background-image:url("Bilder/LSymbolSection.png");
+	background-size:cover;
+	cursor:pointer;
+	float:right;
+}
+
+#okButton {
+	font-weight:bold;
 	position:absolute;
+	width:50px;
+	height:30px;
+	bottom:10px;
+	right:10px;
+	cursor:pointer;
+}
+
+#ticketErstellenForm {
+	position:absolute;
+	width:400px;
+	height:400px;
+	background-image:url("Bilder/Notizzettel.png");
+	background-size:cover;
+	font-weight:bold;
+	margin:25px;
+	
+	-moz-box-shadow: 5px 5px 5px grey;
+	-webkit-box-shadow: 5px 5px 5px grey;
+	box-shadow: 5px 5px 5px grey;
+}
+
+#titelEingabe {
+	padding:4px;
+	width:392px;
+	text-align:center;
+	text-overflow:ellipsis;
+	font-size:36px;
+	font-weight:bold;
+	background-color:rgb(245,225,85);
+	border-style:none;
+}
+
+#inhaltEingabe {
+	width:398px;
+	height:270px;
+	font-size:26px;
+	background-color:rgb(252,232,110);
+	border-style:none;
+}
+
+#bearbeiterEingabe {
+	margin-top:30px;
+	padding-left:16px;
+	text-align:left;
+	text-overflow:ellipsis;
+	font-size:20px;
+	font-weight:bold;
+	width:310px;
+	background-color:rgb(252,232,110);
+	border-style:none;
 }
