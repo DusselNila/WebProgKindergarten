@@ -5,40 +5,54 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="StyleSheet.css">
 </head>
-<body id="body" onmouseup="clickaction(event)">
+<body id="body" <!--onmouseup="clickaction(event)"-->>
 
-	<div class="popUpHintergrund" id="ticketErstellenPopUp">
+	<div class="popUpHintergrund" id="ticketPopUp">
 		<div class="popUpAusgrauen"></div>
-		<div id="ticketErstellenContent">
-			<form id="ticketErstellenForm">
+		<div class="ticketContent">
+			<form class="ticketForm">
 				<input id="titelEingabe" type="text" name="ticketTitel" maxlength="18" placeholder="Titel" required><br>
 				<textarea id="inhaltEingabe" name="ticketInhalt" rows="6" cols="45" maxlength="150" placeholder="Inhalt" required>Hier den Inhalt eingeben.</textarea><br>
-				<input id="bearbeiterEingabe" type="text" name="ticketBearbeiter" maxlength="28" placeholder="Bearbeiter">
+				<input id="bearbeiterEingabe" type="text" name="ticketBearbeiter" maxlength="25" placeholder="Bearbeiter">
 			</form>
-			<div id="abbrechenButton" onclick="closeTicketForm()"></div>
-			<input id="okButton" onclick="createTicket()" type="submit" name="okButton" value="OK">
+			<div class="abbrechenButton" onclick="closeTicketForm()"></div>
+			<input class="okButton" onclick="createOrEditTicket()" type="submit" name="okButton" value="OK">
 		</div>
 	</div>
 
     <script>
-		var openTicketForm = function(event) {
-			var ticketErstellenPopUp = document.getElementById("ticketErstellenPopUp");
-			ticketErstellenPopUp.style.display="block";
+		function openTicketErstellenForm(event) {
+			var ticketPopUp = document.getElementById("ticketPopUp");
+			ticketPopUp.style.display="block";
 			//Form leeren
 			document.getElementById("titelEingabe").value="";
 			document.getElementById("inhaltEingabe").value="";
 			document.getElementById("bearbeiterEingabe").value="";
 			var currentSection = event.target.parentElement.parentElement;
 			localStorage.setItem("currentSectionId",JSON.stringify(currentSection.id));
+			localStorage.setItem("formType","erstellen");
 		}
 		
-		var closeTicketForm = function() {
-			var ticketErstellenPopUp = document.getElementById("ticketErstellenPopUp");
-			ticketErstellenPopUp.style.display="none";
+		function openTicketBearbeitenForm(event) {
+			var ticketPopUp = document.getElementById("ticketPopUp");
+			ticketPopUp.style.display="block";
+			//Form befüllen
+			var tempTicket = event.target.parentElement.parentElement.parentElement;
+			document.getElementById("titelEingabe").value = tempTicket.children[0].children[1].innerHTML;
+			document.getElementById("inhaltEingabe").value = tempTicket.children[1].innerHTML;
+			document.getElementById("bearbeiterEingabe").value = tempTicket.children[2].innerHTML;
+			localStorage.setItem("currentTicket",JSON.stringify(tempTicket.id));
+			localStorage.setItem("formType","bearbeiten");
+		}
+		
+		function closeTicketForm() {
+			var ticketPopUp = document.getElementById("ticketPopUp");
+			ticketPopUp.style.display="none";
 		}
 	
+		/*
         var glblSelTkt;
-        var glblKeyDownFunc = function (event) {
+        function glblKeyDownFunc(event) {
             if (event.keyCode == 13 || event.keyCode == 10) {
                 event.target.contentEditable = false;
 
@@ -59,19 +73,19 @@
 
         };
         
-        var glblKeyUpFunc = function (event) {
+        function glblKeyUpFunc(event) {
             if (glblSelTkt != null) {
 
                 var hdr = glblSelTkt.children[0].children[0];
                 // alert(hdr.innerHTML);
-				/*
+				
                 if (hdr.innerHTML.indexOf('!') != -1) {
                     glblSelTkt.className = "ticket hueimportant";
                 } else if (hdr.innerHTML.indexOf('?') != -1) {
                     glblSelTkt.className = "ticket hueUNimportant";
                 } else {
                     glblSelTkt.className = "ticket";
-                }*/
+                }
             }
         };
         
@@ -105,7 +119,7 @@
                 document.removeEventListener('keyup', glblKeyUpFunc);
                 document.addEventListener('keyup', glblKeyUpFunc);
             }
-        }
+        }*/
 
 		var section = [];
 		var tickets = [];
@@ -133,7 +147,7 @@
 					title.innerHTML = _content;
 					var addTicket = document.createElement("div");
 					addTicket.className = "addTicket";
-					addTicket.onclick = function (event) {openTicketForm(event)};
+					addTicket.onclick = function (event) {openTicketErstellenForm(event)};
 					var sectionDel = document.createElement("div");
 					sectionDel.className = "sectionDel";
 					sectionDel.onclick = function (event) {deleteTable(event) };
@@ -247,44 +261,33 @@
 			localStorage.setItem("SectionData", JSON.stringify(saveSections));
 			var saveSections = JSON.parse(localStorage.getItem("SectionData"));
 		}
-
-		function createTicket(event) {
-			var j = 0;
-			/*var entered = false;
-			//Inhalt abfragen
-			while (!entered) {
-				var headContent = prompt("Titel des Tickets:", "Neues Ticket");
-				if (headContent === "") {
-					alert("Bitte geben Sie einen Titel an!");
-				}
-				else if (headContent == null)
-					return false;
-				else
-				entered = true;
-			}
-			entered = false;
-			while (!entered) {
-				var bodyContent = prompt("Inhalt des Tickets:", "Neuer Inhalt");
-				if (bodyContent === "") {
-					alert("Bitte geben Sie Inhalt an!");
-				}
-				else if (bodyContent == null)
-					return false;
-				else
-					entered = true;
-			}
-			entered = false;
-			while (!entered) {
-				var footContent = prompt("Autor des Tickets:", "Neuer Autor");
-				if (footContent === "") {
-					alert("Bitte geben Sie einen Autor an!");
-				}
-				else if (footContent == null)
-					return false;
-				else
-					entered = true;
-			}*/
+		
+		function createOrEditTicket(){
+			var headContent = document.getElementById("titelEingabe").value;
+			var bodyContent = document.getElementById("inhaltEingabe").value;
+			var footContent = document.getElementById("bearbeiterEingabe").value;
+			var formType = localStorage.getItem("formType");
 			
+			//leere Werte überprüfen
+			if(headContent.trim() === "") {
+				alert("Bitte geben Sie einen Titel ein!");
+			} else if(bodyContent.trim() === "") {
+				alert("Bitte geben Sie Inhalt ein!");
+			} else if(footContent.trim() === "") {
+				alert("Bitte geben Sie einen Bearbeiter an!");
+			} else{
+				if(formType === "erstellen"){
+					createTicket();
+				} else if(formType === "bearbeiten"){
+					editTicket();
+				} else{
+					alert("Etwas ist schief gelaufen...");
+				}
+			}
+		}
+		
+		function createTicket() {
+			var j = 0;
 			var headContent = document.getElementById("titelEingabe").value;
 			var bodyContent = document.getElementById("inhaltEingabe").value;
 			var footContent = document.getElementById("bearbeiterEingabe").value;
@@ -303,7 +306,7 @@
 			HdrTxt.innerHTML = headContent;
 			/*
 			if (headContent.indexOf('!') != -1) {
-			     tickets[j].className = "ticket hueimportant";
+				 tickets[j].className = "ticket hueimportant";
 			} else if (headContent.indexOf('?') != -1) {
 			   tickets[j].className = "ticket hueUNimportant";
 			}*/
@@ -321,6 +324,10 @@
 			diskussionButton.className = "diskussionButton";
 			//diskussionButton.onclick = Hannahs Diskussion
 			iconContainer.appendChild(diskussionButton);
+			var bearbeitenButton = document.createElement("div");
+			bearbeitenButton.className = "bearbeitenButton";
+			bearbeitenButton.onclick = function (event) {openTicketBearbeitenForm(event)};
+			iconContainer.appendChild(bearbeitenButton);
 			var BodyTxt = document.createTextNode(bodyContent);
 			var ticketBody = document.createElement("div");
 			ticketBody.className = "ticketBody";
@@ -332,15 +339,16 @@
 			tickets[j].appendChild(ticketHead);
 			tickets[j].appendChild(ticketBody);
 			tickets[j].appendChild(ticketFooter);
-			//TODO erstellen
+			//evtl. JSON.parse entfernen
 			var tempSectionId = JSON.parse(localStorage.getItem("currentSectionId"));
 			var section = document.getElementById(tempSectionId);
 			section.appendChild(tickets[j]);
 			var hover =  false;
 			tickets[j].draggable = true;
 			//Ändern bei Rechtsklick hinzufügen
+			/*
 			tickets[j].oncontextmenu = function (e) {
-			    if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
+				if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
 
 
 					var promptCmd = prompt("Content:", e.target.innerHTML);
@@ -349,28 +357,42 @@
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
-					/*
 					if (e.target.className === "HdrTxt") {
-					    if (e.target.innerHTML.indexOf('!') != -1) {
-					        var ele = e.target;
-					        while (ele.className != "ticket") {
-					            ele = ele.parentElement;
-					        }
-					        ele.className = "ticket hueimportant";
-					    } else if (e.target.innerHTML.indexOf('?') != -1) {
-					        var ele = e.target;
-					        while (ele.className != "ticket") {
-					            ele = ele.parentElement;
-					        }
-					        ele.className = "ticket hueUNimportant";
-					    }
-					}*/
+						if (e.target.innerHTML.indexOf('!') != -1) {
+							var ele = e.target;
+							while (ele.className != "ticket") {
+								ele = ele.parentElement;
+							}
+							ele.className = "ticket hueimportant";
+						} else if (e.target.innerHTML.indexOf('?') != -1) {
+							var ele = e.target;
+							while (ele.className != "ticket") {
+								ele = ele.parentElement;
+							}
+							ele.className = "ticket hueUNimportant";
+						}
+					}
 					updatefunc();
-			    }
+				}
 				return false;//disable default menu
 				//BodyTxt = prompt("Content:", "...");
-			};
+			};*/
 			j++;
+			updatefunc();
+			closeTicketForm();
+		}
+		
+		function editTicket(){
+			var headContent = document.getElementById("titelEingabe").value;
+			var bodyContent = document.getElementById("inhaltEingabe").value;
+			var footContent = document.getElementById("bearbeiterEingabe").value;
+			var tempTicketId = JSON.parse(localStorage.getItem("currentTicket"));
+			var tempTicket = document.getElementById(tempTicketId);
+			
+			tempTicket.children[0].children[1].innerHTML = headContent;
+			tempTicket.children[1].innerHTML = bodyContent;
+			tempTicket.children[2].innerHTML = footContent;
+			
 			updatefunc();
 			closeTicketForm();
 		}
@@ -428,7 +450,7 @@
 			sectionHead.className = "sectionHead";
 			var addTicket = document.createElement("div");
 			addTicket.className = "addTicket";
-			addTicket.onclick = function (event) {openTicketForm(event)};
+			addTicket.onclick = function (event) {openTicketErstellenForm(event)};
 			var sectionDel = document.createElement("div");
 			sectionDel.className = "sectionDel";
 			sectionDel.onclick = function (event) {deleteTable(event) };
@@ -484,6 +506,10 @@
 			diskussionButton.className = "diskussionButton";
 			//diskussionButton.onclick = Hannahs Diskussion
 			iconContainer.appendChild(diskussionButton);
+			var bearbeitenButton = document.createElement("div");
+			bearbeitenButton.className = "bearbeitenButton";
+			bearbeitenButton.onclick = function (event) {openTicketBearbeitenForm(event)};
+			iconContainer.appendChild(bearbeitenButton);
 			var BodyTxt = document.createTextNode(currentTicket.Body);
 			var ticketBody = document.createElement("div");
 			ticketBody.appendChild(BodyTxt);
@@ -501,6 +527,7 @@
 
 			tickets[i].draggable = true;
 			//Ändern bei Rechtsklick hinzufügen
+			/*)
 			tickets[i].oncontextmenu = function (e) {
 				if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
 					var promptCmd = prompt("Content:", e.target.innerHTML);
@@ -509,7 +536,7 @@
 					} else {
 						e.target.innerHTML = promptCmd;
 					}
-					/*
+					
 					if (e.target.className === "HdrTxt") {
 					    if (e.target.innerHTML.indexOf('!') != -1) {
 					        var ele = e.target;
@@ -524,13 +551,13 @@
 					        }
 					        ele.className = "ticket hueUNimportant";
 					    }
-					}*/
+					}
 					updatefunc();
 				}
 
 				return false;//disable default menu
 				//BodyTxt = prompt("Content:", "...");
-			};
+			};*/
 		}
 		
 		//localStorage direkt erstellen
