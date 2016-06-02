@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="StyleSheet.css">
 </head>
-<body id="body"><!--onmouseup="clickaction(event)"-->
+<body id="body">
 
 	<div class="popUpHintergrund" id="ticketPopUp">
 		<div class="popUpAusgrauen"></div>
@@ -16,7 +16,7 @@
 				<input id="bearbeiterEingabe" type="text" name="ticketBearbeiter" maxlength="25" placeholder="Bearbeiter">
 			</form>
 			<div class="abbrechenButton" onclick="closeTicketForm()"></div>
-			<input class="okButton" onclick="createOrEditTicket()" type="submit" name="okButton" value="OK">
+			<input class="okButton" onclick="createOrEditTicket()" type="button" name="okButton" value="OK">
 		</div>
 	</div>
 
@@ -24,11 +24,11 @@
 	<div class="popUpHintergrund" id="diskPopUp">
 		<div class="popUpAusgrauen"></div>
 		<div class="diskInhalt">
-				<input class="okButton" onclick="addComment()" type="submit" name="okButton" value="OK">
 				<div id="kommentare"></div>
-				<textarea id="kommentarEingabe" name="kommentar" rows="6" cols="50" maxlength="400"></textarea>
 				<div class="abbrechenButton" onclick="closeDiskussion()"></div>
-				
+				<div id="aktuelleZeit"></div>
+				<textarea id="kommentarEingabe" name="kommentar" rows="6" cols="50" maxlength="400"></textarea>
+				<input class="addComment" onclick="addComment()" type="button" name="addComment" value="Abschicken">
 		</div>
 	</div>
 	
@@ -67,12 +67,38 @@
 		function openDiskussion(event){
 			var diskPopUp = document.getElementById("diskPopUp");
 			diskPopUp.style.display ="block";
-			//Kommentare aufrufen
+			var kommentare = document.getElementById("kommentare");
+			
+			//erst alle Kinder löschen
+			kommentare.innerHTML = "";
+			
+			//Kommentare befüllen
 			var tempTicket = event.target.parentElement.parentElement.parentElement;
-			var comment = tempTicket.children[3].innerHTML;
-			var output = comment.replace(/NextLine/g, "<br/>"); 
+			var commentChildren = tempTicket.children[3].children;
+			var tempTime;
+			var tempComment;
+			
+			for(var i = 0; i < commentChildren.length; i++){
+				tempTime = commentChildren[i].children[0].innerHTML;
+				tempComment = commentChildren[i].children[1].innerHTML;
+				
+				var kommentarDiv = document.createElement("div");
+			    kommentarDiv.className = "kommentarDiv";
+			    var timeDiv = document.createElement("div");
+			    timeDiv.className = "zeit";
+			    timeDiv.innerHTML = tempTime;
+			    var kommentar = document.createElement("div");
+			    kommentar.className = "kommentar";
+			    kommentar.innerHTML = tempComment;
+			    kommentarDiv.appendChild(timeDiv);
+			    kommentarDiv.appendChild(kommentar);
+			    kommentare.appendChild(kommentarDiv);
+			}
+			
 			document.getElementById("kommentarEingabe").value = "";
-			document.getElementById("kommentare").innerHTML = output;
+			
+			var date = new Date();
+			document.getElementById("aktuelleZeit").innerHTML = date.toLocaleString() + "";
 			localStorage.setItem("currentTicket",JSON.stringify(tempTicket.id));
 			localStorage.setItem("formType","kommentieren");
 		}
@@ -81,79 +107,6 @@
 			var diskPopUp = document.getElementById("diskPopUp");
 			diskPopUp.style.display ="none";
 		}
-	
-
-		
-		/*
-        var glblSelTkt;
-        function glblKeyDownFunc(event) {
-            if (event.keyCode == 13 || event.keyCode == 10) {
-                event.target.contentEditable = false;
-
-                if (event.target.textContent.length < 1) {
-
-                    event.target.innerHTML = _content;
-                }
-                else {
-                    document.removeEventListener('keydown', this);
-                    updatefunc();
-                }
-                glblSelTkt.className = "ticket";
-                glblSelTkt.draggable = true;
-                glblSelTkt.contentEditable = false;
-                glblSelTkt = null;
-
-            } 
-
-        };
-        
-        function glblKeyUpFunc(event) {
-            if (glblSelTkt != null) {
-
-                var hdr = glblSelTkt.children[0].children[0];
-                // alert(hdr.innerHTML);
-				
-                if (hdr.innerHTML.indexOf('!') != -1) {
-                    glblSelTkt.className = "ticket hueimportant";
-                } else if (hdr.innerHTML.indexOf('?') != -1) {
-                    glblSelTkt.className = "ticket hueUNimportant";
-                } else {
-                    glblSelTkt.className = "ticket";
-                }
-            }
-        };
-        
-        function clickaction(event) {
-            var clickedEle = document.elementFromPoint(event.clientX, event.clientY);
-
-            var tmpTicket = clickedEle;
-            if (clickedEle.className === "HdrTxt" || clickedEle.className === "ticketBody" || clickedEle.className === "ticketFooter") {
-                tmpTicket = clickedEle.parentElement;
-                while (tmpTicket.className != "ticket" && tmpTicket.className != "ticketSel") {
-                    tmpTicket = tmpTicket.parentElement;
-                }
-            }
-
-            if (tmpTicket.className != "ticketSel" && glblSelTkt != null) {
-                //alte Selektion zurücksetzen
-                glblSelTkt.className = "ticket";
-                glblSelTkt.draggable = true;
-                glblSelTkt.contentEditable = false;
-                glblSelTkt = null;
-            }
-
-            if (tmpTicket.className === "ticket") {
-                //neue Selektion zum editieren vorbereiten
-                glblSelTkt = tmpTicket;
-                tmpTicket.className = "ticketSel";
-                tmpTicket.draggable = false;
-                tmpTicket.contentEditable = true;
-                document.removeEventListener('keydown', glblKeyDownFunc);
-                document.addEventListener('keydown', glblKeyDownFunc);
-                document.removeEventListener('keyup', glblKeyUpFunc);
-                document.addEventListener('keyup', glblKeyUpFunc);
-            }
-        }*/
 
 		var section = [];
 		var tickets = [];
@@ -248,23 +201,57 @@
             });
 		}
 		
-		function addComment(event){
+		function addComment(){
 		    var input = document.getElementById("kommentarEingabe").value;
 			var date = new Date();
-			var time = (date.getDate()).toString() + ".0" +
-			(date.getMonth() + 1).toString() + "." +
-			(date.getFullYear()).toString() + ", " +
-			(date.getHours()).toString() + ":" +
-			(date.getMinutes()).toString() + ": ";
-			var kommentar = time + input + "NextLine";
-		    var tempTicketId = JSON.parse(localStorage.getItem("currentTicket"));
+			var time = date.toLocaleString();
+			var tempTicketId = JSON.parse(localStorage.getItem("currentTicket"));
 		    var tempTicket = document.getElementById(tempTicketId);
-		    var comment = tempTicket.children[3].innerHTML + kommentar;
-		    tempTicket.children[3].innerHTML = comment;
+		    
+		    //Kommentar verschönern
+		    var kommentarDiv = document.createElement("div");
+		    kommentarDiv.className = "kommentarDiv";
+		    var timeDiv = document.createElement("div");
+		    timeDiv.className = "zeit";
+		    timeDiv.innerHTML = time;
+		    var kommentar = document.createElement("div");
+		    kommentar.className = "kommentar";
+		    kommentar.innerHTML = input;
+		    kommentarDiv.appendChild(timeDiv);
+		    kommentarDiv.appendChild(kommentar);
+		    tempTicket.children[3].appendChild(kommentarDiv);
+			
 		    updatefunc();
-			var output = comment.replace(/NextLine/g, "<br/>"); 
 			document.getElementById("kommentarEingabe").value = "";
-			document.getElementById("kommentare").innerHTML = output;
+			
+			//Kommentare befüllen
+			var kommentare = document.getElementById("kommentare");
+			
+			//erst alle Kinder löschen
+			kommentare.innerHTML = "";
+			
+			//Kommentare befüllen
+			var commentChildren = tempTicket.children[3].children;
+			var tempTime;
+			var tempComment;
+			
+			for(var i = 0; i < commentChildren.length; i++){
+				tempTime = commentChildren[i].children[0].innerHTML;
+				tempComment = commentChildren[i].children[1].innerHTML;
+				
+				var kommentarDiv = document.createElement("div");
+			    kommentarDiv.className = "kommentarDiv";
+			    var timeDiv = document.createElement("div");
+			    timeDiv.className = "zeit";
+			    timeDiv.innerHTML = tempTime;
+			    var kommentar = document.createElement("div");
+			    kommentar.className = "kommentar";
+			    kommentar.innerHTML = tempComment;
+			    kommentarDiv.appendChild(timeDiv);
+			    kommentarDiv.appendChild(kommentar);
+			    kommentare.appendChild(kommentarDiv);
+			}
+			
 		}
 
 
@@ -293,7 +280,24 @@
 									} else
 										if (children[j].getAttribute('class') == 'ticketComment')
 										{
-											saveTickets[counter].Kommentare = children[j].innerHTML;
+											if(children[j].children.length > 0) {
+												var commentChildren = children[j].children;
+												var commentArray = new Array();
+												var tempTime;
+												var tempComment;
+												var completeComment;
+												
+												for(var z = 0; z < commentChildren.length; z++){
+													tempTime = commentChildren[z].children[0].innerHTML;
+													tempComment = commentChildren[z].children[1].innerHTML;
+													completeComment = {'zeit': tempTime, 'kommentar': tempComment };
+													
+													commentArray[commentArray.length] = completeComment;
+												}
+												saveTickets[counter].Kommentare = commentArray;
+												
+											} else
+												saveTickets[counter].Kommentare = new Array();
 										}
 						}
 						saveTickets[counter].SectionID = i;
@@ -395,52 +399,17 @@
 			var ticketFooter = document.createElement("div");
 			ticketFooter.className = "ticketFooter";
 			ticketFooter.appendChild(FtrTxt);
-			var diskussion = document.createTextNode("Diskussion");
 			var ticketComment = document.createElement("div");
 			ticketComment.className ="ticketComment";
-			ticketComment.appendChild(diskussion);
 			tickets[j].appendChild(ticketHead);
 			tickets[j].appendChild(ticketBody);
 			tickets[j].appendChild(ticketFooter);
 			tickets[j].appendChild(ticketComment);
-			//evtl. JSON.parse entfernen
 			var tempSectionId = JSON.parse(localStorage.getItem("currentSectionId"));
 			var section = document.getElementById(tempSectionId);
 			section.appendChild(tickets[j]);
 			var hover =  false;
 			tickets[j].draggable = true;
-			//Ändern bei Rechtsklick hinzufügen
-			/*
-			tickets[j].oncontextmenu = function (e) {
-				if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
-
-
-					var promptCmd = prompt("Content:", e.target.innerHTML);
-					if (promptCmd == null) {
-						e.target.innerHTML = e.target.innerHTML;
-					} else {
-						e.target.innerHTML = promptCmd;
-					}
-					if (e.target.className === "HdrTxt") {
-						if (e.target.innerHTML.indexOf('!') != -1) {
-							var ele = e.target;
-							while (ele.className != "ticket") {
-								ele = ele.parentElement;
-							}
-							ele.className = "ticket hueimportant";
-						} else if (e.target.innerHTML.indexOf('?') != -1) {
-							var ele = e.target;
-							while (ele.className != "ticket") {
-								ele = ele.parentElement;
-							}
-							ele.className = "ticket hueUNimportant";
-						}
-					}
-					updatefunc();
-				}
-				return false;//disable default menu
-				//BodyTxt = prompt("Content:", "...");
-			};*/
 			j++;
 			updatefunc();
 			closeTicketForm();
@@ -527,7 +496,8 @@
 		}
 
 		//Aufbau der Tickets aus dem Local Storage
-		var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0, Kommentare: ""};
+		var leereKommentare = new Array();
+		var ticket = { Title: "John", Body: "Doe", Author: "Author", ID: 0, SectionID: 0, Kommentare: leereKommentare};
 		var tickets = [];
 		var saveTickets = JSON.parse(localStorage.getItem("TicketData"));
 		for (var i = 0; i < (saveTickets == null ? 10 : saveTickets.length) ; i++) {
@@ -569,7 +539,6 @@
 			var diskussionButton = document.createElement("div");
 			diskussionButton.className = "diskussionButton";
 			diskussionButton.onclick = function (event) {openDiskussion(event)};
-			//diskussionButton.onclick = Hannahs Diskussion
 			iconContainer.appendChild(diskussionButton);
 			var bearbeitenButton = document.createElement("div");
 			bearbeitenButton.className = "bearbeitenButton";
@@ -583,10 +552,25 @@
 			ticketFooter.className = "ticketFooter";
 			var FtrTxt = document.createTextNode(currentTicket.Author);
 			ticketFooter.appendChild(FtrTxt);
-			var diskussion = document.createTextNode(currentTicket.Kommentare);
 			var ticketComment = document.createElement("div");
 			ticketComment.className ="ticketComment";
-			ticketComment.appendChild(diskussion);
+			var commentArray = currentTicket.Kommentare;
+			if(commentArray.length > 0){
+				for(var z = 0; z < commentArray.length; z++){
+					var kommentarDiv = document.createElement("div");
+					kommentarDiv.className = "kommentarDiv";
+				    var timeDiv = document.createElement("div");
+				    timeDiv.classNAme = "zeit";
+				    timeDiv.innerHTML = commentArray[z].zeit;
+				    var kommentar = document.createElement("div");
+				    kommentar.className = "kommentar";
+				    kommentar.innerHTML = commentArray[z].kommentar;
+				    kommentarDiv.appendChild(timeDiv);
+				    kommentarDiv.appendChild(kommentar);
+				    
+				    ticketComment.appendChild(kommentarDiv);
+				}
+			}
 			
 			tickets[i].appendChild(ticketHead);
 			tickets[i].appendChild(ticketBody);
@@ -597,38 +581,6 @@
 			sections[currentTicket.SectionID].appendChild(tickets[i]);
 
 			tickets[i].draggable = true;
-			//Ändern bei Rechtsklick hinzufügen
-			/*)
-			tickets[i].oncontextmenu = function (e) {
-				if (e.target.className === "ticketBody" || e.target.className === "ticketFooter" || e.target.className === "HdrTxt") {
-					var promptCmd = prompt("Content:", e.target.innerHTML);
-					if (promptCmd == null) {
-						e.target.innerHTML = e.target.innerHTML;
-					} else {
-						e.target.innerHTML = promptCmd;
-					}
-					
-					if (e.target.className === "HdrTxt") {
-					    if (e.target.innerHTML.indexOf('!') != -1) {
-					        var ele = e.target;
-					        while (ele.className != "ticket") {
-					            ele = ele.parentElement;
-					        }
-					        ele.className = "ticket hueimportant";
-					    } else if (e.target.innerHTML.indexOf('?') != -1) {
-					        var ele = e.target;
-					        while (ele.className != "ticket" && ele.className != "ticketSel") {
-					            ele = ele.parentElement;
-					        }
-					        ele.className = "ticket hueUNimportant";
-					    }
-					}
-					updatefunc();
-				}
-
-				return false;//disable default menu
-				//BodyTxt = prompt("Content:", "...");
-			};*/
 		}
 		
 		//localStorage direkt erstellen
